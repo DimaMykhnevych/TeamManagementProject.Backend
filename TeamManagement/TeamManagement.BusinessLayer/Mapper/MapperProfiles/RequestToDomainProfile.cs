@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using System;
+using TeamManagement.BusinessLayer.Contracts.v1.Requests;
 using TeamManagement.BusinessLayer.Mapper.Resolvers;
 using TeamManagement.Contracts.v1.Requests;
 using TeamManagement.DataLayer.Domain.Models;
@@ -30,6 +31,7 @@ namespace TeamManagement.BusinessLayer.Mapper.MapperProfiles
             CreateMap<ArticleUpdateRequest, Article>();
             CreateMap<HowToArticleUpdateRequest, HowToArticle>();
             CreateMap<TagCreateRequest, Tag>();
+            CreateMap<Company, CompanyCreateRequest>().ReverseMap();
         }
     }
 }

@@ -41,5 +41,12 @@
             public const string Base = "tags";
             public const string BaseWithVersion = Version + "/" + Base;
         }
+
+        public static class Company
+        {
+            public const string Base = "companies";
+            public const string BaseWithVersion = Version + "/" + Base;
+            public const string GetById = BaseWithVersion + "/{id}";
+        }
     }
 }

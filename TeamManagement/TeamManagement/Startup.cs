@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using TeamManagement.Installers;
 using TeamManagement.Options;
 
@@ -20,6 +21,10 @@ namespace PortalForArbitrators
         public void ConfigureServices(IServiceCollection services)
         {
             InstallerExtensions.InstallServicesInAssembly(services, Configuration);
+            services.AddMvc().AddNewtonsoftJson(o =>
+            {
+                o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

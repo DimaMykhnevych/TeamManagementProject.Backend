@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using TeamManagement.BusinessLayer.Contracts.v1.Responses;
 using TeamManagement.BusinessLayer.Mapper.Resolvers;
 using TeamManagement.Contracts.v1.Responses;
 using TeamManagement.DataLayer.Domain.Models;
@@ -40,6 +41,10 @@ namespace TeamManagement.BusinessLayer.Mapper.MapperProfiles
             }).ForMember(response => response.isAdmin, options => {
                 options.MapFrom<GetUsersResponseIsAdminResolver>();
             });
+
+            CreateMap<Company, CompanyCreateResponse>().ReverseMap();
+            CreateMap<Company, CompanyGetByIdResponse>().ReverseMap();
+           
         }
     }
 }

@@ -13,10 +13,12 @@ namespace TeamManagement.Installers
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<IIdentityService, IdentityService>();
+            services.AddTransient<ICompanyService, CompanyService>();
 
             services.AddTransient<IGenericRepository<Article>, BaseGenericRepository<Article>>();
             services.AddTransient<IHowToArticlesRepository, HowToArticlesRepository>();
             services.AddTransient<IGenericRepository<Tag>, BaseGenericRepository<Tag>>();
+            services.AddTransient<ICompanyRepository, CompanyRepository>();
         }
     }
 }

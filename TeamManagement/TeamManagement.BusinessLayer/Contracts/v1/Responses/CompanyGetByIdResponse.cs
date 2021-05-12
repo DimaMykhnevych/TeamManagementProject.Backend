@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using TeamManagement.DataLayer.Domain.Models;
 
-namespace TeamManagement.DataLayer.Domain.Models
+namespace TeamManagement.BusinessLayer.Contracts.v1.Responses
 {
-    public class Company
+    public class CompanyGetByIdResponse
     {
         public Guid Id { get; set; }
         [Required]
@@ -23,6 +24,4 @@ namespace TeamManagement.DataLayer.Domain.Models
         public List<Team> Teams { get; set; }
         public List<Project> Projects { get; set; }
     }
-
 }
-
