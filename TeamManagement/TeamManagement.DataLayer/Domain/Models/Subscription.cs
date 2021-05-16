@@ -14,6 +14,7 @@ namespace TeamManagement.DataLayer.Domain.Models
         public Guid TransactionId { get; set; }
         public Transaction Transaction { get; set; }
         public Company Company { get; set; }
+        public Guid SubscriptionPlanId { get; set; }
         public SubscriptionPlan SubscriptionPlan { get; set; }
     }
 }

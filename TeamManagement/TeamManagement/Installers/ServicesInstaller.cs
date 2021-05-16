@@ -18,12 +18,15 @@ namespace TeamManagement.Installers
             services.AddTransient<IIdentityService, IdentityService>();
             services.AddTransient<ICompanyService, CompanyService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ISubscriptionPlanService, SubscriptionPlanService>();
 
             services.AddTransient<IGenericRepository<Article>, BaseGenericRepository<Article>>();
             services.AddTransient<IHowToArticlesRepository, HowToArticlesRepository>();
             services.AddTransient<IGenericRepository<Tag>, BaseGenericRepository<Tag>>();
-
+            services.AddTransient<ICompanyRepository, CompanyRepository>();
             services.AddTransient<IGenericRepository<Poll>, BaseGenericRepository<Poll>>();
+            services.AddTransient<IGenericRepository<SubscriptionPlan>, BaseGenericRepository<SubscriptionPlan>>();
+
             services.AddTransient<AbstractValidator<ArticleCreateRequest>, ArticleCreateRequestValidator>();
             services.AddTransient<AbstractValidator<ArticleUpdateRequest>, ArticleUpdateRequestValidator>();
             services.AddTransient<AbstractValidator<HowToArticleCreateRequest>, HowToArticleCreateRequestValidator>();
@@ -31,6 +34,7 @@ namespace TeamManagement.Installers
             services.AddTransient<AbstractValidator<HowToArticleUpdateRequest>, HowToArticleUpdateRequestValidator>();
             services.AddTransient<AbstractValidator<CreatePollRequest>, CreatePollRequestValidator>();
             services.AddTransient<AbstractValidator<TagCreateRequest>, TagCreateRequestValidator>();
-            services.AddTransient<ICompanyRepository, CompanyRepository>();        }
+              
+        }
     }
 }
