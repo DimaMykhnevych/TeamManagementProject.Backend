@@ -32,6 +32,7 @@ namespace TeamManagement.BusinessLayer.Mapper.MapperProfiles
             CreateMap<HowToArticleUpdateRequest, HowToArticle>();
             CreateMap<TagCreateRequest, Tag>();
             CreateMap<Company, CompanyCreateRequest>().ReverseMap();
+            CreateMap<AppUser, UserCreateRequest>().ReverseMap();
         }
     }
 }

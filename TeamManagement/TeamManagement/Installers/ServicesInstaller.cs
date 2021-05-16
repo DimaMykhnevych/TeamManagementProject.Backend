@@ -14,6 +14,7 @@ namespace TeamManagement.Installers
         {
             services.AddTransient<IIdentityService, IdentityService>();
             services.AddTransient<ICompanyService, CompanyService>();
+            services.AddTransient<IUserService, UserService>();
 
             services.AddTransient<IGenericRepository<Article>, BaseGenericRepository<Article>>();
             services.AddTransient<IHowToArticlesRepository, HowToArticlesRepository>();

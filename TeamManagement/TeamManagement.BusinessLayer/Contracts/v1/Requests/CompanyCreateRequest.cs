@@ -14,5 +14,11 @@ namespace TeamManagement.BusinessLayer.Contracts.v1.Requests
         public string Address { get; set; }
         [Required]
         public string Phone { get; set; }
+        [Required]
+        public string CeoUserName { get; set; }
+        [Required]
+        public string CeoEmail { get; set; }
+        [Required]
+        public string CeoPassword { get; set; }
     }
 }

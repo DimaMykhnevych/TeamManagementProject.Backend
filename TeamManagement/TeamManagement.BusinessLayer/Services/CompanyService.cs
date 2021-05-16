@@ -13,17 +13,27 @@ namespace TeamManagement.BusinessLayer.Services
     {
         private readonly ICompanyRepository _companyRepository;
         private readonly IMapper _mapper;
+        private readonly IUserService _userService;
 
-        public CompanyService(IMapper mapper, ICompanyRepository companyRepository)
+        public CompanyService(IMapper mapper, ICompanyRepository companyRepository, IUserService userService)
         {
             _companyRepository = companyRepository;
             _mapper = mapper;
+            _userService = userService;
         }
         public async Task<CompanyCreateResponse> AddCompany(CompanyCreateRequest companyRequest)
         {
+            UserCreateRequest user = new UserCreateRequest();
+            user.Email = companyRequest.CeoEmail;
+            user.Password = companyRequest.CeoPassword;
+            user.Username = companyRequest.CeoUserName;
+            AppUser addedUser = await _userService.CreateUserAsync(user);
+
             Company company = _mapper.Map<Company>(companyRequest);
             company.Subscription = new Subscription();
             company.Subscription.Transaction = new Transaction();
+            company.CeoId = addedUser.Id;
+            company.CEO = addedUser;
             await _companyRepository.Insert(company);
             await _companyRepository.Save();
             return _mapper.Map<CompanyCreateResponse>(company);
