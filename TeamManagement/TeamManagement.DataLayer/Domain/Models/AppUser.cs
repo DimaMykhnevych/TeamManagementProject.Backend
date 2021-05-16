@@ -22,6 +22,6 @@ namespace TeamManagement.DataLayer.Domain.Models
         public Guid? TeamId { get; set; }
         public Team Team { get; set; }
         public ICollection<Poll> Polls { get; set; }
-
+        public ICollection<AppUserOption> AppUserOptions { get; set; }
     }
 }
