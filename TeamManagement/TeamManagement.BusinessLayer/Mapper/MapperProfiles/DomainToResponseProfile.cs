@@ -40,6 +40,9 @@ namespace TeamManagement.BusinessLayer.Mapper.MapperProfiles
             }).ForMember(response => response.isAdmin, options => {
                 options.MapFrom<GetUsersResponseIsAdminResolver>();
             });
+
+            CreateMap<Option, GetPollsOptionsResponse>();
+            CreateMap<Poll, GetPollsResponse>().AfterMap((poll, response) => response.CreatedByName = poll.CreatedBy.FirstName + " " + poll.CreatedBy.LastName);
         }
     }
 }

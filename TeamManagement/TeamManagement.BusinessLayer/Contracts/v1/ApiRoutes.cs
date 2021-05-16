@@ -41,5 +41,12 @@
             public const string Base = "tags";
             public const string BaseWithVersion = Version + "/" + Base;
         }
+
+        public static class Polls
+        {
+            public const string Base = "polls";
+            public const string BaseWithVersion = Version + "/" + Base;
+            public const string MakeVote = BaseWithVersion + "/make-vote";
+        }
     }
 }

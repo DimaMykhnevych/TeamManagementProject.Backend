@@ -22,5 +22,6 @@ namespace TeamManagement.BusinessLayer.Services.Interfaces
         Task<IdentityResult> AddToRoleAsync(Guid userId, string roleName);
         Task<bool> HasRole(string email, string role);
         Task<List<AppUser>> GetAllUsersAsync();
+        Task<Team> GetAppUserTeam(ClaimsPrincipal claimsPrincipal);
     }
 }

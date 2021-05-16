@@ -98,6 +98,8 @@ namespace TeamManagement.Controllers
             return Redirect(returnUrl);
         }
 
+
+
         [HttpPut(ApiRoutes.Identity.MakeAdmin)]
         [RequireRoles("Administrator")]
         public async Task<IActionResult> MakeAdmin(Guid id)

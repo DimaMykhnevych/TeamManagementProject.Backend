@@ -27,6 +27,10 @@ namespace TeamManagement.BusinessLayer.Mapper.MapperProfiles
                 options.MapFrom<ArticlePublisherResolver>();
             });
 
+            CreateMap<CreatePollRequest, Poll>();
+
+            CreateMap<CreateOptionRequest, Option>();
+
             CreateMap<ArticleUpdateRequest, Article>();
             CreateMap<HowToArticleUpdateRequest, HowToArticle>();
             CreateMap<TagCreateRequest, Tag>();

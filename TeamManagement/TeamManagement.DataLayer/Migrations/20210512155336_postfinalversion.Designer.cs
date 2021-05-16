@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamManagement.DataLayer.Data;
 
 namespace TeamManagement.DataLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210512155336_postfinalversion")]
+    partial class postfinalversion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -230,21 +232,6 @@ namespace TeamManagement.DataLayer.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.AppUserOption", b =>
-                {
-                    b.Property<Guid>("OptionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("OptionId", "AppUserId");
-
-                    b.HasIndex("AppUserId");
-
-                    b.ToTable("AppUserOption");
-                });
-
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Article", b =>
                 {
                     b.Property<Guid>("Id")
@@ -369,8 +356,8 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Property<Guid>("PollId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<float>("Value")
-                        .HasColumnType("real");
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -650,25 +637,6 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Navigation("Team");
                 });
 
-            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.AppUserOption", b =>
-                {
-                    b.HasOne("TeamManagement.DataLayer.Domain.Models.AppUser", "AppUser")
-                        .WithMany("AppUserOptions")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TeamManagement.DataLayer.Domain.Models.Option", "Option")
-                        .WithMany("AppUserOptions")
-                        .HasForeignKey("OptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-
-                    b.Navigation("Option");
-                });
-
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Article", b =>
                 {
                     b.HasOne("TeamManagement.DataLayer.Domain.Models.AppUser", "Publisher")
@@ -812,8 +780,6 @@ namespace TeamManagement.DataLayer.Migrations
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.AppUser", b =>
                 {
-                    b.Navigation("AppUserOptions");
-
                     b.Navigation("Articles");
 
                     b.Navigation("Company");
@@ -830,11 +796,6 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Navigation("Projects");
 
                     b.Navigation("Teams");
-                });
-
-            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Option", b =>
-                {
-                    b.Navigation("AppUserOptions");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Poll", b =>
