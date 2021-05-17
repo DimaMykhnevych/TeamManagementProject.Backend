@@ -2,20 +2,20 @@
 
 namespace TeamManagement.DataLayer.Migrations
 {
-    public partial class DeleteTransactionKeyProperty : Migration
+    public partial class RemoveSecretKeyInTransactionEntity : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "TransactionKey",
-                table: "Subscriptions");
+                name: "SecretKey",
+                table: "Transactions");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "TransactionKey",
-                table: "Subscriptions",
+                name: "SecretKey",
+                table: "Transactions",
                 type: "nvarchar(max)",
                 nullable: true);
         }

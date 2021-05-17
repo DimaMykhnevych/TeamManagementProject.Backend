@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using TeamManagement.DataLayer.Domain.Interdaces;
+using System.Text;
 
-namespace TeamManagement.DataLayer.Domain.Models
+namespace TeamManagement.BusinessLayer.Contracts.v1.Requests
 {
-    public class SubscriptionPlan : IIdentificated
+    public class SubscriptionPlanGetRequest
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -14,6 +15,6 @@ namespace TeamManagement.DataLayer.Domain.Models
         public int ProjectsQuantity { get; set; }
         public int TeamsQuantity { get; set; }
         public string Description { get; set; }
-        public Subscription Subscription { get; set; }
+        public SubscriptionGetRequest Subscription { get; set; }
     }
 }

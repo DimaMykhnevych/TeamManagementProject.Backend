@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
+using TeamManagement.DataLayer.Domain.Models;
 
-namespace TeamManagement.DataLayer.Domain.Models
+namespace TeamManagement.BusinessLayer.Contracts.v1.Requests
 {
-    public class Company
+    public class CompanyGetRequest
     {
         public Guid Id { get; set; }
         [Required]
@@ -17,12 +19,10 @@ namespace TeamManagement.DataLayer.Domain.Models
         public string Phone { get; set; }
 
         public Guid SubscriptionId { get; set; }
-        public Subscription Subscription { get; set; }
+        public SubscriptionGetRequest Subscription { get; set; }
         public string CeoId { get; set; }
         public AppUser CEO { get; set; }
         public List<Team> Teams { get; set; }
         public List<Project> Projects { get; set; }
     }
-
 }
-

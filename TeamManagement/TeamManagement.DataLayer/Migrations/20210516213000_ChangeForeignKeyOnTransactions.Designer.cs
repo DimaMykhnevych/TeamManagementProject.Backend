@@ -10,8 +10,8 @@ using TeamManagement.DataLayer.Data;
 namespace TeamManagement.DataLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210508173226_AddCompanySubscriptionTransactionEntities")]
-    partial class AddCompanySubscriptionTransactionEntities
+    [Migration("20210516213000_ChangeForeignKeyOnTransactions")]
+    partial class ChangeForeignKeyOnTransactions
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -207,6 +207,9 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("TeamId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -224,7 +227,24 @@ namespace TeamManagement.DataLayer.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("TeamId");
+
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.AppUserOption", b =>
+                {
+                    b.Property<Guid>("OptionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("OptionId", "AppUserId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("AppUserOption");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Article", b =>
@@ -339,6 +359,116 @@ namespace TeamManagement.DataLayer.Migrations
                     b.ToTable("HowToArticles");
                 });
 
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Option", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("PollId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<float>("Value")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PollId");
+
+                    b.ToTable("Options");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Poll", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CountOfPeopleVoted")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("DoesAllowMultiple")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("TeamId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("TeamId");
+
+                    b.ToTable("Polls");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Project", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProjectDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Report", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Active")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CodeReview")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateOfPublishsing")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PublisherId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Resolved")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PublisherId");
+
+                    b.ToTable("Reports");
+                });
+
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Subscription", b =>
                 {
                     b.Property<Guid>("Id")
@@ -351,18 +481,47 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("SubscriptionPlanId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("TransactionId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("TransactionKey")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("SubscriptionPlanId")
+                        .IsUnique();
 
                     b.HasIndex("TransactionId")
                         .IsUnique();
 
                     b.ToTable("Subscriptions");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.SubscriptionPlan", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<int>("ProjectsQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeamsQuantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SubscriptionPlans");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Tag", b =>
@@ -377,6 +536,46 @@ namespace TeamManagement.DataLayer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tags");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Team", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TeamName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Teams");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.TeamProject", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TeamId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("TeamId");
+
+                    b.ToTable("TeamProjects");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Transaction", b =>
@@ -447,6 +646,34 @@ namespace TeamManagement.DataLayer.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.AppUser", b =>
+                {
+                    b.HasOne("TeamManagement.DataLayer.Domain.Models.Team", "Team")
+                        .WithMany("Members")
+                        .HasForeignKey("TeamId");
+
+                    b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.AppUserOption", b =>
+                {
+                    b.HasOne("TeamManagement.DataLayer.Domain.Models.AppUser", "AppUser")
+                        .WithMany("AppUserOptions")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TeamManagement.DataLayer.Domain.Models.Option", "Option")
+                        .WithMany("AppUserOptions")
+                        .HasForeignKey("OptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Option");
+                });
+
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Article", b =>
                 {
                     b.HasOne("TeamManagement.DataLayer.Domain.Models.AppUser", "Publisher")
@@ -492,24 +719,134 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Navigation("Publisher");
                 });
 
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Option", b =>
+                {
+                    b.HasOne("TeamManagement.DataLayer.Domain.Models.Poll", "Poll")
+                        .WithMany("Options")
+                        .HasForeignKey("PollId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Poll");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Poll", b =>
+                {
+                    b.HasOne("TeamManagement.DataLayer.Domain.Models.AppUser", "CreatedBy")
+                        .WithMany("Polls")
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("TeamManagement.DataLayer.Domain.Models.Team", "Team")
+                        .WithMany("Polls")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Project", b =>
+                {
+                    b.HasOne("TeamManagement.DataLayer.Domain.Models.Company", "Company")
+                        .WithMany("Projects")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Report", b =>
+                {
+                    b.HasOne("TeamManagement.DataLayer.Domain.Models.AppUser", "Publisher")
+                        .WithMany("Reports")
+                        .HasForeignKey("PublisherId");
+
+                    b.Navigation("Publisher");
+                });
+
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Subscription", b =>
                 {
+                    b.HasOne("TeamManagement.DataLayer.Domain.Models.SubscriptionPlan", "SubscriptionPlan")
+                        .WithOne("Subscription")
+                        .HasForeignKey("TeamManagement.DataLayer.Domain.Models.Subscription", "SubscriptionPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("TeamManagement.DataLayer.Domain.Models.Transaction", "Transaction")
                         .WithOne("Subscription")
                         .HasForeignKey("TeamManagement.DataLayer.Domain.Models.Subscription", "TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("SubscriptionPlan");
+
                     b.Navigation("Transaction");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Team", b =>
+                {
+                    b.HasOne("TeamManagement.DataLayer.Domain.Models.Company", "Company")
+                        .WithMany("Teams")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.TeamProject", b =>
+                {
+                    b.HasOne("TeamManagement.DataLayer.Domain.Models.Project", "Project")
+                        .WithMany("TeamProjects")
+                        .HasForeignKey("ProjectId");
+
+                    b.HasOne("TeamManagement.DataLayer.Domain.Models.Team", "Team")
+                        .WithMany("TeamProjects")
+                        .HasForeignKey("TeamId");
+
+                    b.Navigation("Project");
+
+                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.AppUser", b =>
                 {
+                    b.Navigation("AppUserOptions");
+
                     b.Navigation("Articles");
 
                     b.Navigation("Company");
 
                     b.Navigation("HowToArticles");
+
+                    b.Navigation("Polls");
+
+                    b.Navigation("Reports");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Company", b =>
+                {
+                    b.Navigation("Projects");
+
+                    b.Navigation("Teams");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Option", b =>
+                {
+                    b.Navigation("AppUserOptions");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Poll", b =>
+                {
+                    b.Navigation("Options");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Project", b =>
+                {
+                    b.Navigation("TeamProjects");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Subscription", b =>
@@ -517,9 +854,23 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Navigation("Company");
                 });
 
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.SubscriptionPlan", b =>
+                {
+                    b.Navigation("Subscription");
+                });
+
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Tag", b =>
                 {
                     b.Navigation("Articles");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Team", b =>
+                {
+                    b.Navigation("Members");
+
+                    b.Navigation("Polls");
+
+                    b.Navigation("TeamProjects");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Transaction", b =>

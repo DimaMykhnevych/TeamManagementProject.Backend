@@ -42,10 +42,10 @@ namespace TeamManagement.DataLayer.Data
                 .WithOne(c => c.Transaction)
                 .HasForeignKey<Subscription>(s => s.TransactionId);
 
-            builder.Entity<Subscription>()
-                .HasOne<SubscriptionPlan>(s => s.SubscriptionPlan)
-                .WithOne(s => s.Subscription)
-                .HasForeignKey<SubscriptionPlan>(sp => sp.SubscriptionId);
+            builder.Entity<SubscriptionPlan>()
+                .HasOne<Subscription>(s => s.Subscription)
+                .WithOne(s => s.SubscriptionPlan)
+                .HasForeignKey<Subscription>(sp => sp.SubscriptionPlanId);
 
             builder.Entity<AppUserOption>().HasKey(auo => new { auo.OptionId, auo.AppUserId });
 

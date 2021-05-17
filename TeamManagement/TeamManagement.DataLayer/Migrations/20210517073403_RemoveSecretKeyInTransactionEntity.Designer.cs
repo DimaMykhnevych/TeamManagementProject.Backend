@@ -10,8 +10,8 @@ using TeamManagement.DataLayer.Data;
 namespace TeamManagement.DataLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210508190823_FinalVersion")]
-    partial class FinalVersion
+    [Migration("20210517073403_RemoveSecretKeyInTransactionEntity")]
+    partial class RemoveSecretKeyInTransactionEntity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -232,6 +232,21 @@ namespace TeamManagement.DataLayer.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.AppUserOption", b =>
+                {
+                    b.Property<Guid>("OptionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("OptionId", "AppUserId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("AppUserOption");
+                });
+
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Article", b =>
                 {
                     b.Property<Guid>("Id")
@@ -356,8 +371,8 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Property<Guid>("PollId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<float>("Value")
+                        .HasColumnType("real");
 
                     b.HasKey("Id");
 
@@ -377,6 +392,9 @@ namespace TeamManagement.DataLayer.Migrations
 
                     b.Property<int>("CountOfPeopleVoted")
                         .HasColumnType("int");
+
+                    b.Property<bool>("DoesAllowMultiple")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -463,10 +481,16 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("SubscriptionPlanId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("TransactionId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SubscriptionPlanId")
+                        .IsUnique();
 
                     b.HasIndex("TransactionId")
                         .IsUnique();
@@ -483,22 +507,19 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<int>("ProjectsQuantity")
                         .HasColumnType("int");
-
-                    b.Property<Guid>("SubscriptionId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("TeamsQuantity")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SubscriptionId")
-                        .IsUnique();
 
                     b.ToTable("SubscriptionPlans");
                 });
@@ -566,8 +587,8 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Property<string>("PublicKey")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SecretKey")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -632,6 +653,25 @@ namespace TeamManagement.DataLayer.Migrations
                         .HasForeignKey("TeamId");
 
                     b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.AppUserOption", b =>
+                {
+                    b.HasOne("TeamManagement.DataLayer.Domain.Models.AppUser", "AppUser")
+                        .WithMany("AppUserOptions")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TeamManagement.DataLayer.Domain.Models.Option", "Option")
+                        .WithMany("AppUserOptions")
+                        .HasForeignKey("OptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Option");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Article", b =>
@@ -729,24 +769,21 @@ namespace TeamManagement.DataLayer.Migrations
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Subscription", b =>
                 {
+                    b.HasOne("TeamManagement.DataLayer.Domain.Models.SubscriptionPlan", "SubscriptionPlan")
+                        .WithOne("Subscription")
+                        .HasForeignKey("TeamManagement.DataLayer.Domain.Models.Subscription", "SubscriptionPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("TeamManagement.DataLayer.Domain.Models.Transaction", "Transaction")
                         .WithOne("Subscription")
                         .HasForeignKey("TeamManagement.DataLayer.Domain.Models.Subscription", "TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("SubscriptionPlan");
+
                     b.Navigation("Transaction");
-                });
-
-            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.SubscriptionPlan", b =>
-                {
-                    b.HasOne("TeamManagement.DataLayer.Domain.Models.Subscription", "Subscription")
-                        .WithOne("SubscriptionPlan")
-                        .HasForeignKey("TeamManagement.DataLayer.Domain.Models.SubscriptionPlan", "SubscriptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Subscription");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Team", b =>
@@ -777,6 +814,8 @@ namespace TeamManagement.DataLayer.Migrations
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.AppUser", b =>
                 {
+                    b.Navigation("AppUserOptions");
+
                     b.Navigation("Articles");
 
                     b.Navigation("Company");
@@ -795,6 +834,11 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Navigation("Teams");
                 });
 
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Option", b =>
+                {
+                    b.Navigation("AppUserOptions");
+                });
+
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Poll", b =>
                 {
                     b.Navigation("Options");
@@ -808,8 +852,11 @@ namespace TeamManagement.DataLayer.Migrations
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Subscription", b =>
                 {
                     b.Navigation("Company");
+                });
 
-                    b.Navigation("SubscriptionPlan");
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.SubscriptionPlan", b =>
+                {
+                    b.Navigation("Subscription");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Tag", b =>

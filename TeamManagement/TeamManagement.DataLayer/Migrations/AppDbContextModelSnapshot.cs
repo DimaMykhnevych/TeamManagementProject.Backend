@@ -479,10 +479,16 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("SubscriptionPlanId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("TransactionId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SubscriptionPlanId")
+                        .IsUnique();
 
                     b.HasIndex("TransactionId")
                         .IsUnique();
@@ -499,22 +505,19 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,4)");
 
                     b.Property<int>("ProjectsQuantity")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("SubscriptionId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("TeamsQuantity")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SubscriptionId")
-                        .IsUnique();
 
                     b.ToTable("SubscriptionPlans");
                 });
@@ -582,8 +585,8 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Property<string>("PublicKey")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SecretKey")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -764,24 +767,21 @@ namespace TeamManagement.DataLayer.Migrations
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Subscription", b =>
                 {
+                    b.HasOne("TeamManagement.DataLayer.Domain.Models.SubscriptionPlan", "SubscriptionPlan")
+                        .WithOne("Subscription")
+                        .HasForeignKey("TeamManagement.DataLayer.Domain.Models.Subscription", "SubscriptionPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("TeamManagement.DataLayer.Domain.Models.Transaction", "Transaction")
                         .WithOne("Subscription")
                         .HasForeignKey("TeamManagement.DataLayer.Domain.Models.Subscription", "TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("SubscriptionPlan");
+
                     b.Navigation("Transaction");
-                });
-
-            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.SubscriptionPlan", b =>
-                {
-                    b.HasOne("TeamManagement.DataLayer.Domain.Models.Subscription", "Subscription")
-                        .WithOne("SubscriptionPlan")
-                        .HasForeignKey("TeamManagement.DataLayer.Domain.Models.SubscriptionPlan", "SubscriptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Subscription");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Team", b =>
@@ -850,8 +850,11 @@ namespace TeamManagement.DataLayer.Migrations
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Subscription", b =>
                 {
                     b.Navigation("Company");
+                });
 
-                    b.Navigation("SubscriptionPlan");
+            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.SubscriptionPlan", b =>
+                {
+                    b.Navigation("Subscription");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Tag", b =>

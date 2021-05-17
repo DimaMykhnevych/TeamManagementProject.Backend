@@ -1,10 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using TeamManagement.DataLayer.Domain.Interdaces;
 
-namespace TeamManagement.DataLayer.Domain.Models
+namespace TeamManagement.BusinessLayer.Contracts.v1.Requests
 {
-    public class Subscription : IIdentificated
+    public class SubscriptionGetRequest
     {
         public Guid Id { get; set; }
         [Required]
@@ -13,9 +12,9 @@ namespace TeamManagement.DataLayer.Domain.Models
         public DateTime ExpirationDate { get; set; }
 
         public Guid TransactionId { get; set; }
-        public Transaction Transaction { get; set; }
-        public Company Company { get; set; }
+        public TransactionGetRequest Transaction { get; set; }
+        public CompanyGetRequest Company { get; set; }
         public Guid SubscriptionPlanId { get; set; }
-        public SubscriptionPlan SubscriptionPlan { get; set; }
+        public SubscriptionPlanGetRequest SubscriptionPlan { get; set; }
     }
 }

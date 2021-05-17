@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using TeamManagement.BusinessLayer.Contracts.v1.Responses;
 using TeamManagement.BusinessLayer.Mapper.Resolvers;
 using TeamManagement.Contracts.v1.Responses;
 using TeamManagement.DataLayer.Domain.Models;
@@ -43,6 +44,15 @@ namespace TeamManagement.BusinessLayer.Mapper.MapperProfiles
 
             CreateMap<Option, GetPollsOptionsResponse>();
             CreateMap<Poll, GetPollsResponse>().AfterMap((poll, response) => response.CreatedByName = poll.CreatedBy.FirstName + " " + poll.CreatedBy.LastName);
+            CreateMap<Company, CompanyCreateResponse>().ReverseMap();
+            CreateMap<Company, CompanyGetByIdResponse>().ReverseMap();
+            CreateMap<SubscriptionPlan, SubscriptionPlanGetResponse>().ReverseMap();
+            CreateMap<Company, CompanyGetResponse>().ReverseMap();
+            CreateMap<Subscription, SubscriptionGetResponse>().ReverseMap();
+            CreateMap<SubscriptionPlan, SubscriptionPlanGetResponse>().ReverseMap();
+            CreateMap<Transaction, TransactionGetResponse>().ReverseMap();
+            CreateMap<Subscription, SubscriptionCreateResponse>().ReverseMap();
+            CreateMap<Transaction, TransactionUpdateResponse>().ReverseMap();
         }
     }
 }
