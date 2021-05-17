@@ -10,7 +10,6 @@ using TeamManagement.Contracts.v1;
 
 namespace TeamManagement.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class SubscriptionPlanController : ControllerBase
     {
