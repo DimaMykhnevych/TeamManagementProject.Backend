@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using TeamManagement.DataLayer.Domain.Models;
+using System.Text;
 
-namespace TeamManagement.BusinessLayer.Contracts.v1.Responses
+namespace TeamManagement.BusinessLayer.Contracts.v1.Requests
 {
-    public class SubscriptionPlanGetResponse
+    public class SubscriptionPlanGetRequest
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -14,6 +15,6 @@ namespace TeamManagement.BusinessLayer.Contracts.v1.Responses
         public int ProjectsQuantity { get; set; }
         public int TeamsQuantity { get; set; }
         public string Description { get; set; }
-        public SubscriptionGetResponse Subscription { get; set; }
+        public SubscriptionGetRequest Subscription { get; set; }
     }
 }

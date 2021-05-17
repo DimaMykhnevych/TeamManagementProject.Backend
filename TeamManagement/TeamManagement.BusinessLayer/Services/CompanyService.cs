@@ -31,6 +31,7 @@ namespace TeamManagement.BusinessLayer.Services
 
             Company company = _mapper.Map<Company>(companyRequest);
             company.Subscription = new Subscription();
+            company.Subscription.SubscriptionPlanId = new Guid("83531015-3AA5-47DC-B651-0485708BBF03");
             company.Subscription.Transaction = new Transaction();
             company.CeoId = addedUser.Id;
             company.CEO = addedUser;

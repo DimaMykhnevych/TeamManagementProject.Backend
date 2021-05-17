@@ -61,5 +61,12 @@
             public const string BaseWithVersion = Version + "/" + Base;
             public const string GetById = BaseWithVersion + "/{id}";
         }
+
+        public static class Subscription
+        {
+            public const string Base = "subscriptions";
+            public const string BaseWithVersion = Version + "/" + Base;
+            public const string Update = BaseWithVersion + "/{id}";
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading.Tasks;
 using TeamManagement.DataLayer.Data;
 using TeamManagement.DataLayer.Domain.Models;
@@ -16,7 +17,10 @@ namespace TeamManagement.DataLayer.Repositories
 
         public async Task<Company> Get(Guid id)
         {
-            return await _context.Companies.FindAsync(id);
+            return await _context.Companies
+                .Include(c => c.Subscription)
+                .ThenInclude(c => c.Transaction)
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<Company> Insert(Company company)

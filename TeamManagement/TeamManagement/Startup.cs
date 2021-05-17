@@ -21,6 +21,7 @@ namespace PortalForArbitrators
         public void ConfigureServices(IServiceCollection services)
         {
             InstallerExtensions.InstallServicesInAssembly(services, Configuration);
+            services.Configure<StripeKeys>(Configuration.GetSection("StripeKeys"));
             services.AddMvc().AddNewtonsoftJson(o =>
             {
                 o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
