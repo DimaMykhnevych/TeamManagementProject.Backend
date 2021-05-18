@@ -14,7 +14,7 @@ namespace TeamManagement.DataLayer.Domain.Models
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Poision { get; set; }
+        public string Position { get; set; }
 
         public ICollection<Article> Articles { get; private set; }
         public ICollection<HowToArticle> HowToArticles { get; private set; }

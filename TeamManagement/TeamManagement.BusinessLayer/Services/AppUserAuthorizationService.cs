@@ -36,7 +36,7 @@ namespace TeamManagement.BusinessLayer.Services
             return new List<Claim>()
             {
                 new Claim(ClaimTypes.Name, user.UserName.ToString()),
-                new Claim(ClaimTypes.Role, user.Poision)
+                new Claim(ClaimTypes.Role, user.Position)
             };
         }
 
@@ -63,7 +63,7 @@ namespace TeamManagement.BusinessLayer.Services
                 UserName = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Poision = user.Poision
+                Position = user.Position
             };
 
             return info;

@@ -13,13 +13,10 @@ namespace TeamManagement.Controllers
     public class AuthController : ControllerBase
     {
         private readonly BaseAuthorizationService _authorizationService;
-        private readonly UserManager<AppUser> _userManager;
 
-        public AuthController(BaseAuthorizationService authorizationService,
-            UserManager<AppUser> userManager)
+        public AuthController(BaseAuthorizationService authorizationService)
         {
             _authorizationService = authorizationService;
-            _userManager = userManager;
         }
 
         [HttpPost]

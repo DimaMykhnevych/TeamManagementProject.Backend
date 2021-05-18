@@ -34,7 +34,7 @@ namespace TeamManagement.BusinessLayer.Services
             AppUser user = _mapper.Map<AppUser>(model);
             user.FirstName = model.Username;
             user.LastName = "CEO";
-            user.Poision = "CEO";
+            user.Position = "CEO";
             IdentityResult addUserResult = await _userManager.CreateAsync(user, model.Password);
             await _identityService.AddToRoleAsync(new Guid(user.Id), "CEO");
             ValidateIdentityResult(addUserResult);
