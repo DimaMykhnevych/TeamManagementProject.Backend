@@ -14,12 +14,14 @@ namespace TeamManagement.BusinessLayer.Services
     {
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IIdentityService _identityService;
 
         public UserService(IMapper mapper,
-            UserManager<AppUser> userManager)
+            UserManager<AppUser> userManager, IIdentityService identityService)
         {
             _mapper = mapper;
             _userManager = userManager;
+            _identityService = identityService;
         }
         public async Task<AppUser> CreateUserAsync(UserCreateRequest model)
         {
@@ -32,8 +34,9 @@ namespace TeamManagement.BusinessLayer.Services
             AppUser user = _mapper.Map<AppUser>(model);
             user.FirstName = model.Username;
             user.LastName = "CEO";
+            user.Poision = "CEO";
             IdentityResult addUserResult = await _userManager.CreateAsync(user, model.Password);
-
+            await _identityService.AddToRoleAsync(new Guid(user.Id), "CEO");
             ValidateIdentityResult(addUserResult);
             return await _userManager.FindByNameAsync(user.UserName);
         }

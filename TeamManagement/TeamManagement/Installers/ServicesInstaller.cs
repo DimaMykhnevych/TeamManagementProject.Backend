@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TeamManagement.BusinessLayer.Factories.AuthTokenFactory;
 using TeamManagement.BusinessLayer.Services;
 using TeamManagement.BusinessLayer.Services.Interfaces;
 using TeamManagement.Contracts.v1.Requests;
@@ -31,6 +32,10 @@ namespace TeamManagement.Installers
             services.AddTransient<IGenericRepository<SubscriptionPlan>, BaseGenericRepository<SubscriptionPlan>>();
             services.AddTransient<IGenericRepository<Subscription>, BaseGenericRepository<Subscription>>();
             services.AddTransient<IGenericRepository<Transaction>, BaseGenericRepository<Transaction>>();
+            services.AddTransient<BaseAuthorizationService, AppUserAuthorizationService>();
+
+            // Factories
+            services.AddTransient<IAuthTokenFactory, AuthTokenFactory>();
 
             services.AddTransient<AbstractValidator<ArticleCreateRequest>, ArticleCreateRequestValidator>();
             services.AddTransient<AbstractValidator<ArticleUpdateRequest>, ArticleUpdateRequestValidator>();
