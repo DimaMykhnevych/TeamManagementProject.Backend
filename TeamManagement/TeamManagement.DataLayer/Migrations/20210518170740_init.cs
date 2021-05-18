@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TeamManagement.DataLayer.Migrations
 {
-    public partial class postfinalversion : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -19,6 +19,22 @@ namespace TeamManagement.DataLayer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SubscriptionPlans",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
+                    ProjectsQuantity = table.Column<int>(type: "int", nullable: false),
+                    TeamsQuantity = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubscriptionPlans", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -38,8 +54,8 @@ namespace TeamManagement.DataLayer.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SecretKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PublicKey = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    PublicKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -74,37 +90,22 @@ namespace TeamManagement.DataLayer.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TransactionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    TransactionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SubscriptionPlanId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Subscriptions", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Subscriptions_SubscriptionPlans_SubscriptionPlanId",
+                        column: x => x.SubscriptionPlanId,
+                        principalTable: "SubscriptionPlans",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Subscriptions_Transactions_TransactionId",
                         column: x => x.TransactionId,
                         principalTable: "Transactions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SubscriptionPlans",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    ProjectsQuantity = table.Column<int>(type: "int", nullable: false),
-                    TeamsQuantity = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SubscriptionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SubscriptionPlans", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SubscriptionPlans_Subscriptions_SubscriptionId",
-                        column: x => x.SubscriptionId,
-                        principalTable: "Subscriptions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -125,6 +126,18 @@ namespace TeamManagement.DataLayer.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppUserOption",
+                columns: table => new
+                {
+                    OptionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppUserOption", x => new { x.OptionId, x.AppUserId });
                 });
 
             migrationBuilder.CreateTable(
@@ -393,7 +406,7 @@ namespace TeamManagement.DataLayer.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Value = table.Column<float>(type: "real", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PollId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -407,6 +420,11 @@ namespace TeamManagement.DataLayer.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppUserOption_AppUserId",
+                table: "AppUserOption",
+                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Articles_PublisherId",
@@ -511,9 +529,9 @@ namespace TeamManagement.DataLayer.Migrations
                 column: "PublisherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SubscriptionPlans_SubscriptionId",
-                table: "SubscriptionPlans",
-                column: "SubscriptionId",
+                name: "IX_Subscriptions_SubscriptionPlanId",
+                table: "Subscriptions",
+                column: "SubscriptionPlanId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -542,6 +560,22 @@ namespace TeamManagement.DataLayer.Migrations
                 table: "AspNetUserRoles",
                 column: "UserId",
                 principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AppUserOption_AspNetUsers_AppUserId",
+                table: "AppUserOption",
+                column: "AppUserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AppUserOption_Options_OptionId",
+                table: "AppUserOption",
+                column: "OptionId",
+                principalTable: "Options",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
@@ -593,6 +627,9 @@ namespace TeamManagement.DataLayer.Migrations
                 table: "Companies");
 
             migrationBuilder.DropTable(
+                name: "AppUserOption");
+
+            migrationBuilder.DropTable(
                 name: "Articles");
 
             migrationBuilder.DropTable(
@@ -614,16 +651,13 @@ namespace TeamManagement.DataLayer.Migrations
                 name: "HowToArticles");
 
             migrationBuilder.DropTable(
-                name: "Options");
-
-            migrationBuilder.DropTable(
                 name: "Reports");
 
             migrationBuilder.DropTable(
-                name: "SubscriptionPlans");
+                name: "TeamProjects");
 
             migrationBuilder.DropTable(
-                name: "TeamProjects");
+                name: "Options");
 
             migrationBuilder.DropTable(
                 name: "Tags");
@@ -632,10 +666,10 @@ namespace TeamManagement.DataLayer.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Polls");
+                name: "Projects");
 
             migrationBuilder.DropTable(
-                name: "Projects");
+                name: "Polls");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
@@ -648,6 +682,9 @@ namespace TeamManagement.DataLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "Subscriptions");
+
+            migrationBuilder.DropTable(
+                name: "SubscriptionPlans");
 
             migrationBuilder.DropTable(
                 name: "Transactions");

@@ -10,8 +10,8 @@ using TeamManagement.DataLayer.Data;
 namespace TeamManagement.DataLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210517073031_AddTransactionDateToTransactionEntity")]
-    partial class AddTransactionDateToTransactionEntity
+    [Migration("20210518170740_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -585,9 +585,6 @@ namespace TeamManagement.DataLayer.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("PublicKey")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SecretKey")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("TransactionDate")
