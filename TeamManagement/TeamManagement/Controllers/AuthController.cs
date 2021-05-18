@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using TeamManagement.BusinessLayer.Services.Interfaces;
 using TeamManagement.Contracts.v1;
+using TeamManagement.DataLayer.Domain.Models;
 using TeamManagement.DataLayer.Domain.Models.Auth;
 
 namespace TeamManagement.Controllers
@@ -11,9 +13,13 @@ namespace TeamManagement.Controllers
     public class AuthController : ControllerBase
     {
         private readonly BaseAuthorizationService _authorizationService;
-        public AuthController(BaseAuthorizationService authorizationService)
+        private readonly UserManager<AppUser> _userManager;
+
+        public AuthController(BaseAuthorizationService authorizationService,
+            UserManager<AppUser> userManager)
         {
             _authorizationService = authorizationService;
+            _userManager = userManager;
         }
 
         [HttpPost]
