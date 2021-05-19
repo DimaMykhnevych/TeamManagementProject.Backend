@@ -33,6 +33,7 @@ namespace TeamManagement.Installers
             services.AddTransient<IGenericRepository<Subscription>, BaseGenericRepository<Subscription>>();
             services.AddTransient<IGenericRepository<Transaction>, BaseGenericRepository<Transaction>>();
             services.AddTransient<BaseAuthorizationService, AppUserAuthorizationService>();
+            services.AddTransient<IEmployeeRegistrationService, EmployeeRegistrationService>();
 
             // Factories
             services.AddTransient<IAuthTokenFactory, AuthTokenFactory>();

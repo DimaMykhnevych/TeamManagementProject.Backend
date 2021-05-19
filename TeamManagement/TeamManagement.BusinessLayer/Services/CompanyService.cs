@@ -21,13 +21,14 @@ namespace TeamManagement.BusinessLayer.Services
             _mapper = mapper;
             _userService = userService;
         }
+
         public async Task<CompanyCreateResponse> AddCompany(CompanyCreateRequest companyRequest)
         {
             UserCreateRequest user = new UserCreateRequest();
             user.Email = companyRequest.CeoEmail;
             user.Password = companyRequest.CeoPassword;
             user.Username = companyRequest.CeoUserName;
-            AppUser addedUser = await _userService.CreateUserAsync(user);
+            AppUser addedUser = await _userService.CreateUserAsync(user, "CEO");
 
             Company company = _mapper.Map<Company>(companyRequest);
             company.Subscription = new Subscription();

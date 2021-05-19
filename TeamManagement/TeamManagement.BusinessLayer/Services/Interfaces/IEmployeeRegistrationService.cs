@@ -4,8 +4,8 @@ using TeamManagement.DataLayer.Domain.Models;
 
 namespace TeamManagement.BusinessLayer.Services.Interfaces
 {
-    public interface IUserService
+    public interface IEmployeeRegistrationService
     {
-        Task<AppUser> CreateUserAsync(UserCreateRequest userModel, string role);
+        Task<AppUser> RegisterEmployee(EmployeeRegistrationRequest employee);
     }
 }

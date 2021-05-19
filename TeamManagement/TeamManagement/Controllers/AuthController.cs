@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using TeamManagement.Authorization;
 using TeamManagement.BusinessLayer.Services.Interfaces;
 using TeamManagement.Contracts.v1;
 using TeamManagement.DataLayer.Domain.Models;

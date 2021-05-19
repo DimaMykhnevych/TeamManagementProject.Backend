@@ -76,5 +76,11 @@
             public const string BaseWithVersion = Version + "/" + Base;
             public const string Update = BaseWithVersion + "/{id}";
         }
+
+        public static class Employee
+        {
+            public const string Base = "employee";
+            public const string BaseWithVersion = Version + "/" + Base;
+        }
     }
 }

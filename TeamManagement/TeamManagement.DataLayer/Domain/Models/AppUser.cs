@@ -10,11 +10,13 @@ namespace TeamManagement.DataLayer.Domain.Models
         {
             Articles = new List<Article>();
             HowToArticles = new List<HowToArticle>();
+            DateOfBirth = new DateTime();
         }
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Position { get; set; }
+        public DateTime DateOfBirth { get; set; }
 
         public ICollection<Article> Articles { get; private set; }
         public ICollection<HowToArticle> HowToArticles { get; private set; }

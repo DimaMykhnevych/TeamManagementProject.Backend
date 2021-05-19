@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using TeamManagement.BusinessLayer.Contracts.v1.Requests;
 using TeamManagement.BusinessLayer.Exceptions;
@@ -10,33 +12,31 @@ using TeamManagement.DataLayer.Domain.Models;
 
 namespace TeamManagement.BusinessLayer.Services
 {
-    public class UserService : IUserService
+    public class EmployeeRegistrationService : IEmployeeRegistrationService
     {
-        private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
         private readonly IIdentityService _identityService;
+        private readonly IMapper _mapper;
 
-        public UserService(IMapper mapper,
-            UserManager<AppUser> userManager, IIdentityService identityService)
+        public EmployeeRegistrationService(UserManager<AppUser> userManager, 
+            IIdentityService identityService, IMapper mapper)
         {
-            _mapper = mapper;
             _userManager = userManager;
             _identityService = identityService;
+            _mapper = mapper;
         }
-        public async Task<AppUser> CreateUserAsync(UserCreateRequest model, string role)
+
+        public async Task<AppUser> RegisterEmployee(EmployeeRegistrationRequest employee)
         {
-            AppUser existingUser = await _userManager.FindByNameAsync(model.Username);
+            AppUser existingUser = await _userManager.FindByEmailAsync(employee.Email);
             if (existingUser != null)
             {
                 throw new UsernameAlreadyTakenException();
             }
-
-            AppUser user = _mapper.Map<AppUser>(model);
-            user.FirstName = model.Username;
-            user.LastName = "CEO";
-            user.Position = "CEO";
-            IdentityResult addUserResult = await _userManager.CreateAsync(user, model.Password);
-            await _identityService.AddToRoleAsync(new Guid(user.Id), role);
+            AppUser user = _mapper.Map<AppUser>(employee);
+            user.UserName = employee.FirstName + employee.LastName;
+            IdentityResult addUserResult = await _userManager.CreateAsync(user, employee.Password);
+            await _identityService.AddToRoleAsync(new Guid(user.Id), user.Position);
             ValidateIdentityResult(addUserResult);
             return await _userManager.FindByNameAsync(user.UserName);
         }
