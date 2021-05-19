@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using TeamManagement.BusinessLayer.Contracts.v1.Requests;
 using TeamManagement.BusinessLayer.Services.Interfaces;
@@ -8,6 +9,7 @@ using TeamManagement.DataLayer.Domain.Models;
 namespace TeamManagement.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "CEO")]
     public class EmployeesController : ControllerBase
     {
         private readonly IEmployeeRegistrationService _employeeRegistrationService;
