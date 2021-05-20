@@ -9,6 +9,7 @@ namespace TeamManagement.DataLayer.Data
         public AppDbContext(DbContextOptions options) : base(options)
         { }
 
+        public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<Article> Articles { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<HowToArticle> HowToArticles { get; set; }

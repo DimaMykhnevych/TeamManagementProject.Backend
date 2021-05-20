@@ -94,5 +94,12 @@
             public const string Base = "team";
             public const string BaseWithVersion = Version + "/" + Base;
         }
+
+        public static class User
+        {
+            public const string Base = "user";
+            public const string BaseWithVersion = Version + "/" + Base;
+        }
+
     }
 }

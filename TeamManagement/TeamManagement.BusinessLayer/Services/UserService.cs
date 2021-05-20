@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TeamManagement.BusinessLayer.Contracts.v1.Requests;
 using TeamManagement.BusinessLayer.Exceptions;
 using TeamManagement.BusinessLayer.Services.Interfaces;
 using TeamManagement.DataLayer.Domain.Models;
+using TeamManagement.DataLayer.Repositories.Interfaces;
 
 namespace TeamManagement.BusinessLayer.Services
 {
@@ -15,13 +17,16 @@ namespace TeamManagement.BusinessLayer.Services
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
         private readonly IIdentityService _identityService;
+        private readonly IUserRepository _userRepository;
 
         public UserService(IMapper mapper,
-            UserManager<AppUser> userManager, IIdentityService identityService)
+            UserManager<AppUser> userManager, IIdentityService identityService,
+            IUserRepository userRepository)
         {
             _mapper = mapper;
             _userManager = userManager;
             _identityService = identityService;
+            _userRepository = userRepository;
         }
         public async Task<AppUser> CreateUserAsync(UserCreateRequest model, string role)
         {
@@ -39,6 +44,11 @@ namespace TeamManagement.BusinessLayer.Services
             await _identityService.AddToRoleAsync(new Guid(user.Id), role);
             ValidateIdentityResult(addUserResult);
             return await _userManager.FindByNameAsync(user.UserName);
+        }
+
+        public async Task<IEnumerable<AppUser>> GetAllUsers()
+        {
+            return await _userRepository.GetUsers();
         }
 
         private void ValidateIdentityResult(IdentityResult result)
