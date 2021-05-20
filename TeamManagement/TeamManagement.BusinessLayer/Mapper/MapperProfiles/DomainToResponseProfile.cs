@@ -54,6 +54,7 @@ namespace TeamManagement.BusinessLayer.Mapper.MapperProfiles
             CreateMap<Subscription, SubscriptionCreateResponse>().ReverseMap();
             CreateMap<Transaction, TransactionUpdateResponse>().ReverseMap();
             CreateMap<Project, ProjectCreateResponse>().ReverseMap();
+            CreateMap<Team, TeamCreateResponse>().ReverseMap();
         }
     }
 }

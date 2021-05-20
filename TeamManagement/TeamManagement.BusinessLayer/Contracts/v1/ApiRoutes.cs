@@ -87,7 +87,12 @@
         {
             public const string Base = "project";
             public const string BaseWithVersion = Version + "/" + Base;
+        }
 
+        public static class Team
+        {
+            public const string Base = "team";
+            public const string BaseWithVersion = Version + "/" + Base;
         }
     }
 }
