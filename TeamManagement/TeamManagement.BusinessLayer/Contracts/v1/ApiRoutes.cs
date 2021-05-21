@@ -15,6 +15,7 @@
             public const string MakeAdmin = BaseWithVersion + "/make-admin/{id}";
             public const string GetUsers = BaseWithVersion + "/users";
             public const string GetUser = BaseWithVersion + "/user";
+            public const string GetTeamMembers = BaseWithVersion + "/getTeam";
         }
 
         public static class Articles
@@ -67,6 +68,13 @@
             public const string Base = "subscriptions";
             public const string BaseWithVersion = Version + "/" + Base;
             public const string Update = BaseWithVersion + "/{id}";
+        }
+
+        public static class Event
+        {
+            public const string Base = "events";
+            public const string BaseWithVersion = Version + "/" + Base;
+            public const string ChangeAttendingStatus = BaseWithVersion + "/changeAttending";
         }
     }
 }

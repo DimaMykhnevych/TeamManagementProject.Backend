@@ -108,7 +108,7 @@ namespace TeamManagement.BusinessLayer.Services
 
         public async Task<AppUser> GetAppUserAsync(Guid Id) => await _userManager.FindByIdAsync(Id.ToString());
 
-        public async Task<Team> GetAppUserTeam(ClaimsPrincipal claimsPrincipal) => (await _userManager.Users.Include(user => user.Team)
+        public async Task<Team> GetAppUserTeam(ClaimsPrincipal claimsPrincipal) => (await _userManager.Users.Include(user => user.Team).ThenInclude(team => team.Members)
                                                                                                               .SingleOrDefaultAsync(user => user.Id == GetAppUserAsync(claimsPrincipal).Result.Id)).Team;
         public async Task<IdentityResult> CreateRoleAsync(string roleName)
         {

@@ -29,6 +29,10 @@ namespace TeamManagement.BusinessLayer.Mapper.MapperProfiles
             });
 
             CreateMap<CreatePollRequest, Poll>();
+            CreateMap<EventCreateRequest, Event>().AfterMap((req, ev) =>
+            {
+                ev.DateTime = DateTime.Parse(req.DateTime);
+            });
 
             CreateMap<CreateOptionRequest, Option>();
 

@@ -31,6 +31,7 @@ namespace TeamManagement.Installers
             services.AddTransient<IGenericRepository<SubscriptionPlan>, BaseGenericRepository<SubscriptionPlan>>();
             services.AddTransient<IGenericRepository<Subscription>, BaseGenericRepository<Subscription>>();
             services.AddTransient<IGenericRepository<Transaction>, BaseGenericRepository<Transaction>>();
+            services.AddTransient<IGenericRepository<Event>, BaseGenericRepository<Event>>();
 
             services.AddTransient<AbstractValidator<ArticleCreateRequest>, ArticleCreateRequestValidator>();
             services.AddTransient<AbstractValidator<ArticleUpdateRequest>, ArticleUpdateRequestValidator>();

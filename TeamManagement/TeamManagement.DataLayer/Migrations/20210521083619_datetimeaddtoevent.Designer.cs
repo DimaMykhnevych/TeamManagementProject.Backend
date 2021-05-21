@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamManagement.DataLayer.Data;
 
 namespace TeamManagement.DataLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210521083619_datetimeaddtoevent")]
+    partial class datetimeaddtoevent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -345,9 +347,6 @@ namespace TeamManagement.DataLayer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
@@ -364,8 +363,6 @@ namespace TeamManagement.DataLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
 
                     b.ToTable("Event");
                 });
@@ -775,15 +772,6 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Navigation("Subscription");
                 });
 
-            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Event", b =>
-                {
-                    b.HasOne("TeamManagement.DataLayer.Domain.Models.AppUser", "CreatedBy")
-                        .WithMany("Events")
-                        .HasForeignKey("CreatedById");
-
-                    b.Navigation("CreatedBy");
-                });
-
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.HowToArticle", b =>
                 {
                     b.HasOne("TeamManagement.DataLayer.Domain.Models.AppUser", "Publisher")
@@ -896,8 +884,6 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Navigation("Articles");
 
                     b.Navigation("Company");
-
-                    b.Navigation("Events");
 
                     b.Navigation("HowToArticles");
 
