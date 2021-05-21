@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System.Collections.Generic;
 using TeamManagement.BusinessLayer.Contracts.v1.Responses;
 using TeamManagement.BusinessLayer.Mapper.Resolvers;
 using TeamManagement.Contracts.v1.Responses;
@@ -40,6 +41,17 @@ namespace TeamManagement.BusinessLayer.Mapper.MapperProfiles
                 response.FullName = appuser.FirstName + " " + appuser.LastName;
             }).ForMember(response => response.isAdmin, options => {
                 options.MapFrom<GetUsersResponseIsAdminResolver>();
+            });
+
+            CreateMap<AppUser, TeamMembersResponse>().AfterMap((appuser, response) => response.FullName = appuser.FirstName + " " + appuser.LastName);
+            CreateMap<Event, EventsForUserResponse>().AfterMap((ev, response) =>
+            {
+                response.CreatedByName = ev.CreatedBy.FirstName + " " + ev.CreatedBy.LastName;
+                response.Attendies = new List<AttendiesResponse>();
+                foreach (var att in ev.AppUserEvents)
+                {
+                    response.Attendies.Add(new AttendiesResponse { Email = att.AppUser.Email, Id = att.AppUser.Id, Status = att.Status });
+                }
             });
 
             CreateMap<Option, GetPollsOptionsResponse>();

@@ -52,6 +52,11 @@ namespace TeamManagement.DataLayer.Data
 
             builder.Entity<AppUser>().HasMany(au => au.AppUserOptions).WithOne(auo => auo.AppUser);
             builder.Entity<Option>().HasMany(au => au.AppUserOptions).WithOne(auo => auo.Option);
+
+            builder.Entity<AppUserEvent>().HasKey(aue => new { aue.AppUserId, aue.EventId });
+
+            builder.Entity<AppUser>().HasMany(au => au.AppUserEvents).WithOne(aue => aue.AppUser);
+            builder.Entity<Event>().HasMany(au => au.AppUserEvents).WithOne(auo => auo.Event);
         }
     }
 }

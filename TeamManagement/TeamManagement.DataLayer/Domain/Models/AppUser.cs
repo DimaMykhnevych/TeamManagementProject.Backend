@@ -26,5 +26,7 @@ namespace TeamManagement.DataLayer.Domain.Models
         public Team Team { get; set; }
         public ICollection<Poll> Polls { get; set; }
         public ICollection<AppUserOption> AppUserOptions { get; set; }
+        public ICollection<AppUserEvent> AppUserEvents { get; set; }
+        public ICollection<Event> Events { get; set; }
     }
 }

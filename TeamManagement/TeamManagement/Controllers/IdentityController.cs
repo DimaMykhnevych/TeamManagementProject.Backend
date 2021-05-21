@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TeamManagement.Authorization;
+using TeamManagement.BusinessLayer.Contracts.v1.Responses;
 using TeamManagement.BusinessLayer.Services.Interfaces;
 using TeamManagement.Contracts.v1;
 using TeamManagement.Contracts.v1.Responses;
@@ -135,6 +136,31 @@ namespace TeamManagement.Controllers
         {
             var user = await _identityService.GetAppUserAsync(this.User);
             var userResponse = _mapper.Map<AppUser, GetUserResponse>(user);
+
+            if (userResponse != null)
+            {
+                return Ok(userResponse);
+            }
+
+            return NotFound();
+        }
+
+        [HttpGet(ApiRoutes.Identity.GetTeamMembers)]
+        [Authorize]
+        public async Task<IActionResult> GetTeamMembers()
+        {
+            var userTeam = await _identityService.GetAppUserTeam(this.User);
+
+            var currUser = await _identityService.GetAppUserAsync(this.User);
+
+            if (userTeam == null)
+            {
+                return NotFound();
+            }
+
+            userTeam.Members.Remove(currUser);
+
+            var userResponse = _mapper.Map<List<AppUser>, List<TeamMembersResponse>>(userTeam.Members);
 
             if (userResponse != null)
             {
