@@ -76,5 +76,11 @@
             public const string BaseWithVersion = Version + "/" + Base;
             public const string ChangeAttendingStatus = BaseWithVersion + "/changeAttending";
         }
+
+        public static class Report
+        {
+            public const string Base = "reports";
+            public const string BaseWithVersion = Version + "/" + Base;
+        }
     }
 }

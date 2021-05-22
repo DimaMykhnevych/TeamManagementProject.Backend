@@ -53,6 +53,20 @@ namespace TeamManagement.BusinessLayer.Mapper.MapperProfiles
                     response.Attendies.Add(new AttendiesResponse { Email = att.AppUser.Email, Id = att.AppUser.Id, Status = att.Status });
                 }
             });
+            CreateMap<Report, GetReportsResponse>().AfterMap((rep, response) =>
+            {
+                foreach(var rec in rep.ReportRecords)
+                {
+                    switch (rec.RecordName)
+                    {
+                        case "Code Review": response.CodeReview.Add(rec.Value); break;
+                        case "Active": response.Active.Add(rec.Value); break;
+                        case "Resolved": response.Resolved.Add(rec.Value); break;
+                    }
+                }
+
+                response.EmployeeFullName = rep.Publisher.FirstName + " " + rep.Publisher.LastName;
+            });
 
             CreateMap<Option, GetPollsOptionsResponse>();
             CreateMap<Poll, GetPollsResponse>().AfterMap((poll, response) => response.CreatedByName = poll.CreatedBy.FirstName + " " + poll.CreatedBy.LastName);

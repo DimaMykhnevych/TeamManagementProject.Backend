@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using System;
+using System.Collections.Generic;
 using TeamManagement.BusinessLayer.Contracts.v1.Requests;
 using TeamManagement.BusinessLayer.Mapper.Resolvers;
 using TeamManagement.Contracts.v1.Requests;
@@ -35,6 +36,26 @@ namespace TeamManagement.BusinessLayer.Mapper.MapperProfiles
             });
 
             CreateMap<CreateOptionRequest, Option>();
+
+            CreateMap<CreateReportRequest, Report>().AfterMap((req, rep) =>
+            {
+                rep.ReportRecords = new List<ReportRecord>();
+
+                foreach (var coderev in req.CodeReview)
+                {
+                    rep.ReportRecords.Add(new ReportRecord { RecordName = "Code Review", Value = coderev });
+                }
+
+                foreach (var res in req.Resolved)
+                {
+                    rep.ReportRecords.Add(new ReportRecord { RecordName = "Resolved", Value = res });
+                }
+
+                foreach (var act in req.Active)
+                {
+                    rep.ReportRecords.Add(new ReportRecord { RecordName = "Active", Value = act });
+                }
+            });
 
             CreateMap<ArticleUpdateRequest, Article>();
             CreateMap<HowToArticleUpdateRequest, HowToArticle>();
