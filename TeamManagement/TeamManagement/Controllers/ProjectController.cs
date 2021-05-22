@@ -9,7 +9,7 @@ using TeamManagement.Contracts.v1;
 namespace TeamManagement.Controllers
 {
     [ApiController]
-    [Authorize(Roles = "CEO")]
+    [Authorize]
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;

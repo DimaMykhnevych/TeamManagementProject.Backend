@@ -22,6 +22,7 @@ namespace TeamManagement.BusinessLayer.Services
         public async Task<ProjectCreateResponse> CreateProject(ProjectCreateRequest projectCreateRequest)
         {
             Project projectToAdd = _mapper.Map<Project>(projectCreateRequest);
+            //projectToAdd.CompanyId = new Guid("5FFAEE79-E542-42F8-1021-08D91B597D4E");
             await _projectRepository.CreateAsync(projectToAdd);
             return _mapper.Map<ProjectCreateResponse>(projectToAdd);
         }

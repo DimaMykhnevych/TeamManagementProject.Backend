@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -37,7 +38,7 @@ namespace PortalForArbitrators
                     options.LoginPath = "/Login/Account/";
 
                 });
-           
+
             //var authOptions = Configuration.GetSection(nameof(TeamManagement.BusinessLayer.Options.AuthOptions)).Get<TeamManagement.BusinessLayer.Options.AuthOptions>();
 
 
@@ -106,6 +107,8 @@ namespace PortalForArbitrators
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseCookiePolicy();
 
             app.UseEndpoints(endpoints =>
             {

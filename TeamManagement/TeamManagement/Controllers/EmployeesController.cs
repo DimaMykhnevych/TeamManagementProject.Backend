@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TeamManagement.BusinessLayer.Contracts.v1.Requests;
 using TeamManagement.BusinessLayer.Services.Interfaces;
@@ -9,7 +10,7 @@ using TeamManagement.DataLayer.Domain.Models;
 namespace TeamManagement.Controllers
 {
     [ApiController]
-    [Authorize(Roles = "CEO")]
+    [Authorize(Roles = "CEO, Administrator")]
     public class EmployeesController : ControllerBase
     {
         private readonly IEmployeeRegistrationService _employeeRegistrationService;
@@ -24,6 +25,13 @@ namespace TeamManagement.Controllers
         {
             AppUser employee = await _employeeRegistrationService.RegisterEmployee(registrationRequest);
             return Ok(employee);
+        }
+
+        [HttpGet(ApiRoutes.Employee.BaseWithVersion)]
+        public async Task<IActionResult> GetEmployees()
+        {
+            IEnumerable<AppUser> employees = await _employeeRegistrationService.GetEmployees();
+            return Ok(employees);
         }
     }
 }

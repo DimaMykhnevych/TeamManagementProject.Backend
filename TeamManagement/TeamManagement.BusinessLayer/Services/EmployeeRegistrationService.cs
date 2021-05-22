@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TeamManagement.BusinessLayer.Contracts.v1.Requests;
@@ -22,6 +24,11 @@ namespace TeamManagement.BusinessLayer.Services
             _userManager = userManager;
             _identityService = identityService;
             _mapper = mapper;
+        }
+
+        public async Task<IEnumerable<AppUser>> GetEmployees()
+        {
+            return await _userManager.Users.Where(u => u.TeamId == null && u.Position != "CEO").ToListAsync();
         }
 
         public async Task<AppUser> RegisterEmployee(EmployeeRegistrationRequest employee)
