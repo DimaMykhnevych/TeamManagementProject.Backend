@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,26 +31,41 @@ namespace PortalForArbitrators
             {
                 o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(o =>
-            {
-                o.IncludeErrorDetails = true;
-
-                o.TokenValidationParameters = new TokenValidationParameters()
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
                 {
-                    ValidateActor = false,
-                    ValidIssuer = AuthOptions.ISSUER,
-                    ValidAudience = AuthOptions.AUDIENCE,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
-                    ValidateLifetime = true,
-                };
-            });
+                    options.LoginPath = "/Login/Account/";
 
+                });
+           
+            //var authOptions = Configuration.GetSection(nameof(TeamManagement.BusinessLayer.Options.AuthOptions)).Get<TeamManagement.BusinessLayer.Options.AuthOptions>();
+
+
+            //services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //}).AddJwtBearer(o =>
+            //{
+            //    o.IncludeErrorDetails = true;
+
+            //    o.TokenValidationParameters = new TokenValidationParameters()
+            //    {
+            //        ValidateActor = false,
+            //        ValidIssuer = AuthOptions.ISSUER,
+            //        ValidAudience = AuthOptions.AUDIENCE,
+            //        ValidateIssuerSigningKey = true,
+            //        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+            //        ValidateLifetime = true,
+            //    };
+            //});
+
+            //services.AddAuthentication().AddGoogle(options =>
+            //{
+            //    options.ClientId = authOptions.ClientID;
+            //    options.ClientSecret = authOptions.ClientSecret;
+
+            //});
 
             services.AddAuthorization();
         }

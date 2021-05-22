@@ -8,6 +8,7 @@ using TeamManagement.BusinessLayer.Contracts.v1.Requests;
 using TeamManagement.BusinessLayer.Exceptions;
 using TeamManagement.BusinessLayer.Services.Interfaces;
 using TeamManagement.DataLayer.Domain.Models;
+using TeamManagement.DataLayer.Domain.Models.Auth;
 using TeamManagement.DataLayer.Repositories.Interfaces;
 
 namespace TeamManagement.BusinessLayer.Services
@@ -18,15 +19,17 @@ namespace TeamManagement.BusinessLayer.Services
         private readonly UserManager<AppUser> _userManager;
         private readonly IIdentityService _identityService;
         private readonly IUserRepository _userRepository;
+        private readonly SignInManager<AppUser> _signInManager;
 
         public UserService(IMapper mapper,
             UserManager<AppUser> userManager, IIdentityService identityService,
-            IUserRepository userRepository)
+            IUserRepository userRepository, SignInManager<AppUser> signInManager)
         {
             _mapper = mapper;
             _userManager = userManager;
             _identityService = identityService;
             _userRepository = userRepository;
+            _signInManager = signInManager;
         }
         public async Task<AppUser> CreateUserAsync(UserCreateRequest model, string role)
         {
@@ -43,7 +46,19 @@ namespace TeamManagement.BusinessLayer.Services
             IdentityResult addUserResult = await _userManager.CreateAsync(user, model.Password);
             await _identityService.AddToRoleAsync(new Guid(user.Id), role);
             ValidateIdentityResult(addUserResult);
+            if (addUserResult.Succeeded)
+            {
+                await _signInManager.SignInAsync(user, false);
+            }
             return await _userManager.FindByNameAsync(user.UserName);
+        }
+
+
+        public async Task<SignInResult> LoginAsync(AuthSignInModel loginUserRequest)
+        {
+            var result =
+                await _signInManager.PasswordSignInAsync(loginUserRequest.UserName, loginUserRequest.Password, true, false);
+            return result;
         }
 
         public async Task<IEnumerable<AppUser>> GetAllUsers()

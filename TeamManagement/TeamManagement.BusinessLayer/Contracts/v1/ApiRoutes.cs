@@ -106,5 +106,6 @@
             public const string Base = "events";
             public const string BaseWithVersion = Version + "/" + Base;
             public const string ChangeAttendingStatus = BaseWithVersion + "/changeAttending";
-        }    }
+        }    
+    }
 }

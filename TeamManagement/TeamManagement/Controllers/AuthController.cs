@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TeamManagement.Authorization;
 using TeamManagement.BusinessLayer.Services.Interfaces;
@@ -14,10 +19,12 @@ namespace TeamManagement.Controllers
     public class AuthController : ControllerBase
     {
         private readonly BaseAuthorizationService _authorizationService;
+        private readonly IUserService _userService;
 
-        public AuthController(BaseAuthorizationService authorizationService)
+        public AuthController(BaseAuthorizationService authorizationService, IUserService userService)
         {
             _authorizationService = authorizationService;
+            _userService = userService;
         }
 
         [HttpPost]
@@ -25,8 +32,17 @@ namespace TeamManagement.Controllers
         [Route(ApiRoutes.Auth.Login)]
         public async Task<IActionResult> Login([FromBody] AuthSignInModel model)
         {
-            JWTTokenStatusResult result = await _authorizationService.GenerateTokenAsync(model);
-            return Ok(result);
+            var user = await _userService.LoginAsync(model);
+            ClaimsIdentity s  = new ClaimsIdentity(new[] {
+                    new Claim(ClaimTypes.Name, model.UserName)
+                }, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(s);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            var t = User.Identity;
+            return Ok(user);
+            //JWTTokenStatusResult result = await _authorizationService.GenerateTokenAsync(model);
+            //return Ok(result);
         }
 
         [HttpGet]
