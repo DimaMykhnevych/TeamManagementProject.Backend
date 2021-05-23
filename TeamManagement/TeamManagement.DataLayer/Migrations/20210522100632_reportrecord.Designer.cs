@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamManagement.DataLayer.Data;
 
 namespace TeamManagement.DataLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210522100632_reportrecord")]
+    partial class reportrecord
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,9 +164,6 @@ namespace TeamManagement.DataLayer.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -204,9 +203,6 @@ namespace TeamManagement.DataLayer.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Position")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -500,7 +496,13 @@ namespace TeamManagement.DataLayer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Active")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("AdditionalComment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CodeReview")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DateOfPublishsing")
@@ -508,6 +510,9 @@ namespace TeamManagement.DataLayer.Migrations
 
                     b.Property<string>("PublisherId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Resolved")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -558,7 +563,8 @@ namespace TeamManagement.DataLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SubscriptionPlanId");
+                    b.HasIndex("SubscriptionPlanId")
+                        .IsUnique();
 
                     b.HasIndex("TransactionId")
                         .IsUnique();
@@ -877,8 +883,8 @@ namespace TeamManagement.DataLayer.Migrations
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Subscription", b =>
                 {
                     b.HasOne("TeamManagement.DataLayer.Domain.Models.SubscriptionPlan", "SubscriptionPlan")
-                        .WithMany("Subscription")
-                        .HasForeignKey("SubscriptionPlanId")
+                        .WithOne("Subscription")
+                        .HasForeignKey("TeamManagement.DataLayer.Domain.Models.Subscription", "SubscriptionPlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

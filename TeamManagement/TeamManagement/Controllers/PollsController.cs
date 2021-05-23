@@ -55,12 +55,6 @@ namespace TeamManagement.Controllers
         [HttpGet(ApiRoutes.Polls.BaseWithVersion)]
         public async Task<IActionResult> GetPolls()
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(v => v.Errors.Select(x => x.ErrorMessage));
-                return BadRequest(errors);
-            }
-
             var polls = await _genericPollRepository.GetAsync(includeFunc: polls => polls.Include(poll => poll.Team).Include(poll => poll.CreatedBy).Include(poll => poll.Options).ThenInclude(p => p.AppUserOptions), 
                                                               filter: poll => poll.TeamId == (_identityService.GetAppUserTeam(this.User)).Result.Id);
 
