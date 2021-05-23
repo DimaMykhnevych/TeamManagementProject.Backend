@@ -6,6 +6,6 @@ namespace TeamManagement.BusinessLayer.Services.Interfaces
 {
     public interface IProjectService
     {
-        Task<ProjectCreateResponse> CreateProject(ProjectCreateRequest projectCreateRequest);
+        Task<ProjectCreateResponse> CreateProject(ProjectCreateRequest projectCreateRequest, string currentUserName);
     }
 }

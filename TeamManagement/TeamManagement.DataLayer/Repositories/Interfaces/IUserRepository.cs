@@ -7,5 +7,6 @@ namespace TeamManagement.DataLayer.Repositories.Interfaces
     public interface IUserRepository
     {
         Task<IEnumerable<AppUser>> GetUsers();
+        Task<AppUser> GetUserWithCompany(string userName);
     }
 }

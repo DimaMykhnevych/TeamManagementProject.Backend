@@ -21,7 +21,8 @@ namespace TeamManagement.Controllers
         [HttpPost(ApiRoutes.Project.BaseWithVersion)]
         public async Task<IActionResult> CreateProject(ProjectCreateRequest projectCreateRequest)
         {
-            ProjectCreateResponse projectCreateResponse =  await _projectService.CreateProject(projectCreateRequest);
+            ProjectCreateResponse projectCreateResponse =  
+                await _projectService.CreateProject(projectCreateRequest, User.Identity.Name);
             return Ok(projectCreateResponse);
         }
     }

@@ -12,17 +12,21 @@ namespace TeamManagement.BusinessLayer.Services
     public class ProjectService : IProjectService
     {
         private readonly IGenericRepository<Project> _projectRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public ProjectService(IGenericRepository<Project> genericRepository, IMapper mapper)
+
+        public ProjectService(IGenericRepository<Project> genericRepository, IMapper mapper, IUserRepository userRepository)
         {
             _projectRepository = genericRepository;
             _mapper = mapper;
+            _userRepository = userRepository;
         }
-        public async Task<ProjectCreateResponse> CreateProject(ProjectCreateRequest projectCreateRequest)
+        public async Task<ProjectCreateResponse> CreateProject(ProjectCreateRequest projectCreateRequest, string currentUserName)
         {
             Project projectToAdd = _mapper.Map<Project>(projectCreateRequest);
-            //projectToAdd.CompanyId = new Guid("5FFAEE79-E542-42F8-1021-08D91B597D4E");
+            AppUser currentUserWithCompany = await _userRepository.GetUserWithCompany(currentUserName);
+            projectToAdd.CompanyId = currentUserWithCompany.Company.Id;
             await _projectRepository.CreateAsync(projectToAdd);
             return _mapper.Map<ProjectCreateResponse>(projectToAdd);
         }

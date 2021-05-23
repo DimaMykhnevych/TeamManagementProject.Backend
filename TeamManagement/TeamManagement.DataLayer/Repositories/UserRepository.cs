@@ -19,5 +19,11 @@ namespace TeamManagement.DataLayer.Repositories
         {
             return await _context.AppUsers.ToListAsync();
         }
+
+        public async Task<AppUser> GetUserWithCompany(string userName)
+        {
+            return await _context.AppUsers.Include(u => u.Company)
+                .FirstOrDefaultAsync(u => u.UserName == userName);
+        }
     }
 }

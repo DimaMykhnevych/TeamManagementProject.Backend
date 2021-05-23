@@ -15,17 +15,23 @@ namespace TeamManagement.BusinessLayer.Services
         private readonly IGenericRepository<Team> _teamRepository;
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IUserRepository _userRepository;
 
-        public TeamService(IGenericRepository<Team> genericRepository, IMapper mapper, UserManager<AppUser> userManager)
+        public TeamService(IGenericRepository<Team> genericRepository, IMapper mapper, 
+            UserManager<AppUser> userManager, IUserRepository userRepository)
         {
             _teamRepository = genericRepository;
             _mapper = mapper;
             _userManager = userManager;
+            _userRepository = userRepository;
         }
-        public async Task<TeamCreateResponse> CreateTeam(TeamCreateRequest teamCreateRequest)
+        public async Task<TeamCreateResponse> CreateTeam(TeamCreateRequest teamCreateRequest, string currentUserName)
         {
             Team team = _mapper.Map<Team>(teamCreateRequest);
             List<AppUser> members = teamCreateRequest.Members;
+
+            AppUser currentUserWithCompany = await _userRepository.GetUserWithCompany(currentUserName);
+            team.CompanyId = currentUserWithCompany.Company.Id;
 
             team.Members = null;
             await _teamRepository.CreateAsync(team);

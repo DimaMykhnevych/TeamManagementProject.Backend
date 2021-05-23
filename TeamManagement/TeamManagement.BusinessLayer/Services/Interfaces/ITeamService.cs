@@ -6,6 +6,6 @@ namespace TeamManagement.BusinessLayer.Services.Interfaces
 {
     public interface ITeamService
     {
-        Task<TeamCreateResponse> CreateTeam(TeamCreateRequest teamCreateRequest);
+        Task<TeamCreateResponse> CreateTeam(TeamCreateRequest teamCreateRequest, string currentUserName);
     }
 }
