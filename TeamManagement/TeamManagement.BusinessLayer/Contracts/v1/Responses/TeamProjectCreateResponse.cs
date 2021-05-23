@@ -1,9 +1,9 @@
 ﻿using System;
-using TeamManagement.DataLayer.Domain.Interdaces;
+using TeamManagement.DataLayer.Domain.Models;
 
-namespace TeamManagement.DataLayer.Domain.Models
+namespace TeamManagement.BusinessLayer.Contracts.v1.Responses
 {
-    public class TeamProject : IIdentificated
+    public class TeamProjectCreateResponse
     {
         public Guid Id { get; set; }
         public Guid? TeamId { get; set; }

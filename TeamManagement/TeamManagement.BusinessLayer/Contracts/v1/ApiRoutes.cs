@@ -18,6 +18,15 @@
             public const string GetTeamMembers = BaseWithVersion + "/getTeam";
         }
 
+        public static class Auth
+        {
+            public const string Base = "auth";
+            public const string BaseWithVersion = Version + "/" + Base;
+            public const string Login = BaseWithVersion + "/login";
+            public const string Logout = BaseWithVersion + "/logout";
+            public const string UserInfo = BaseWithVersion + "/user-info";
+        }
+
         public static class Articles
         {
             public const string Base = "articles";
@@ -69,6 +78,29 @@
             public const string BaseWithVersion = Version + "/" + Base;
             public const string Update = BaseWithVersion + "/{id}";
         }
+        public static class Employee
+        {
+            public const string Base = "employee";
+            public const string BaseWithVersion = Version + "/" + Base;
+        }
+
+        public static class Project
+        {
+            public const string Base = "project";
+            public const string BaseWithVersion = Version + "/" + Base;
+        }
+
+        public static class Team
+        {
+            public const string Base = "team";
+            public const string BaseWithVersion = Version + "/" + Base;
+        }
+
+        public static class User
+        {
+            public const string Base = "user";
+            public const string BaseWithVersion = Version + "/" + Base;
+        }
 
         public static class Event
         {
@@ -80,6 +112,11 @@
         public static class Report
         {
             public const string Base = "reports";
+            public const string BaseWithVersion = Version + "/" + Base;
+        }
+        public static class TeamProject
+        {
+            public const string Base = "teamProject";
             public const string BaseWithVersion = Version + "/" + Base;
         }
     }

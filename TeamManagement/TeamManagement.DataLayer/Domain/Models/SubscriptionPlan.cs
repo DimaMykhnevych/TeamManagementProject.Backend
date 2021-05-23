@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using TeamManagement.DataLayer.Domain.Interdaces;
 
@@ -14,6 +15,6 @@ namespace TeamManagement.DataLayer.Domain.Models
         public int ProjectsQuantity { get; set; }
         public int TeamsQuantity { get; set; }
         public string Description { get; set; }
-        public Subscription Subscription { get; set; }
+        public List<Subscription> Subscription { get; set; }
     }
 }

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using TeamManagement.DataLayer.Domain.Interdaces;
+using TeamManagement.DataLayer.Domain.Models;
 
-namespace TeamManagement.DataLayer.Domain.Models
+namespace TeamManagement.BusinessLayer.Contracts.v1.Responses
 {
-    public class Team : IIdentificated
+    public class TeamGetResponse
     {
         public Guid Id { get; set; }
-        public string TeamName { get; set; } 
+        public string TeamName { get; set; }
 
         public List<AppUser> Members { get; set; }
 

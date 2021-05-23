@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamManagement.DataLayer.Data;
 
 namespace TeamManagement.DataLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210519182736_AddDateOfBirthToAppUser")]
+    partial class AddDateOfBirthToAppUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,24 +238,6 @@ namespace TeamManagement.DataLayer.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.AppUserEvent", b =>
-                {
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<Guid>("EventId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("AppUserId", "EventId");
-
-                    b.HasIndex("EventId");
-
-                    b.ToTable("AppUserEvent");
-                });
-
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.AppUserOption", b =>
                 {
                     b.Property<Guid>("OptionId")
@@ -343,37 +327,6 @@ namespace TeamManagement.DataLayer.Migrations
                         .IsUnique();
 
                     b.ToTable("Companies");
-                });
-
-            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Event", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Passcode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.ToTable("Event");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.HowToArticle", b =>
@@ -500,7 +453,10 @@ namespace TeamManagement.DataLayer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AdditionalComment")
+                    b.Property<string>("Active")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CodeReview")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DateOfPublishsing")
@@ -509,33 +465,14 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Property<string>("PublisherId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Resolved")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PublisherId");
 
                     b.ToTable("Reports");
-                });
-
-            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.ReportRecord", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("RecordName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ReportId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
-
-                    b.ToTable("ReportRecord");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Subscription", b =>
@@ -558,7 +495,8 @@ namespace TeamManagement.DataLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SubscriptionPlanId");
+                    b.HasIndex("SubscriptionPlanId")
+                        .IsUnique();
 
                     b.HasIndex("TransactionId")
                         .IsUnique();
@@ -723,25 +661,6 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Navigation("Team");
                 });
 
-            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.AppUserEvent", b =>
-                {
-                    b.HasOne("TeamManagement.DataLayer.Domain.Models.AppUser", "AppUser")
-                        .WithMany("AppUserEvents")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TeamManagement.DataLayer.Domain.Models.Event", "Event")
-                        .WithMany("AppUserEvents")
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-
-                    b.Navigation("Event");
-                });
-
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.AppUserOption", b =>
                 {
                     b.HasOne("TeamManagement.DataLayer.Domain.Models.AppUser", "AppUser")
@@ -794,15 +713,6 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Navigation("CEO");
 
                     b.Navigation("Subscription");
-                });
-
-            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Event", b =>
-                {
-                    b.HasOne("TeamManagement.DataLayer.Domain.Models.AppUser", "CreatedBy")
-                        .WithMany("Events")
-                        .HasForeignKey("CreatedById");
-
-                    b.Navigation("CreatedBy");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.HowToArticle", b =>
@@ -863,22 +773,11 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Navigation("Publisher");
                 });
 
-            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.ReportRecord", b =>
-                {
-                    b.HasOne("TeamManagement.DataLayer.Domain.Models.Report", "Report")
-                        .WithMany("ReportRecords")
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Report");
-                });
-
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Subscription", b =>
                 {
                     b.HasOne("TeamManagement.DataLayer.Domain.Models.SubscriptionPlan", "SubscriptionPlan")
-                        .WithMany("Subscription")
-                        .HasForeignKey("SubscriptionPlanId")
+                        .WithOne("Subscription")
+                        .HasForeignKey("TeamManagement.DataLayer.Domain.Models.Subscription", "SubscriptionPlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -921,15 +820,11 @@ namespace TeamManagement.DataLayer.Migrations
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.AppUser", b =>
                 {
-                    b.Navigation("AppUserEvents");
-
                     b.Navigation("AppUserOptions");
 
                     b.Navigation("Articles");
 
                     b.Navigation("Company");
-
-                    b.Navigation("Events");
 
                     b.Navigation("HowToArticles");
 
@@ -945,11 +840,6 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Navigation("Teams");
                 });
 
-            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Event", b =>
-                {
-                    b.Navigation("AppUserEvents");
-                });
-
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Option", b =>
                 {
                     b.Navigation("AppUserOptions");
@@ -963,11 +853,6 @@ namespace TeamManagement.DataLayer.Migrations
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Project", b =>
                 {
                     b.Navigation("TeamProjects");
-                });
-
-            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Report", b =>
-                {
-                    b.Navigation("ReportRecords");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Subscription", b =>
