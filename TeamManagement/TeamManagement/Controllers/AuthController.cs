@@ -33,16 +33,15 @@ namespace TeamManagement.Controllers
         public async Task<IActionResult> Login([FromBody] AuthSignInModel model)
         {
             var user = await _userService.LoginAsync(model);
-            ClaimsIdentity s  = new ClaimsIdentity(new[] {
-                    new Claim(ClaimTypes.Name, model.UserName)
-                }, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(s);
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
             var t = User.Identity;
             return Ok(user);
-            //JWTTokenStatusResult result = await _authorizationService.GenerateTokenAsync(model);
-            //return Ok(result);
+        }
+
+        [HttpGet(ApiRoutes.Auth.Logout)]
+        public async Task<IActionResult> Logout()
+        {
+            await _userService.LogOut();
+            return Ok();
         }
 
         [HttpGet]

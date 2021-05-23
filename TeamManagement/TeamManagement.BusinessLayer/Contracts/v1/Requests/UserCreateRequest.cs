@@ -9,7 +9,9 @@ namespace TeamManagement.BusinessLayer.Contracts.v1.Requests
         public string Email { get; set; }
 
         [Required]
-        public string Username { get; set; }
+        public string FirstName { get; set; }
+        [Required]
+        public string LastName { get; set; }
 
         [Required]
         [MinLength(6)]

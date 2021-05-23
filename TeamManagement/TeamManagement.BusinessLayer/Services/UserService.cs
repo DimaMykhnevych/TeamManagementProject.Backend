@@ -33,22 +33,23 @@ namespace TeamManagement.BusinessLayer.Services
         }
         public async Task<AppUser> CreateUserAsync(UserCreateRequest model, string role)
         {
-            AppUser existingUser = await _userManager.FindByNameAsync(model.Username);
+            AppUser existingUser = await _userManager.FindByNameAsync(model.Email);
             if (existingUser != null)
             {
                 throw new UsernameAlreadyTakenException();
             }
 
             AppUser user = _mapper.Map<AppUser>(model);
-            user.FirstName = model.Username;
-            user.LastName = "CEO";
             user.Position = "CEO";
+            user.UserName = model.Email;
+
             IdentityResult addUserResult = await _userManager.CreateAsync(user, model.Password);
             await _identityService.AddToRoleAsync(new Guid(user.Id), role);
+            await _identityService.AddToRoleAsync(new Guid(user.Id), "Administrator");
             ValidateIdentityResult(addUserResult);
             if (addUserResult.Succeeded)
             {
-                await _signInManager.SignInAsync(user, false);
+                await _signInManager.PasswordSignInAsync(user.UserName, model.Password, true, false);
             }
             return await _userManager.FindByNameAsync(user.UserName);
         }
@@ -75,6 +76,11 @@ namespace TeamManagement.BusinessLayer.Services
                                          .Aggregate((i, j) => i + ";" + j);
                 throw new Exception(errorsMessage);
             }
+        }
+
+        public async Task LogOut()
+        {
+            await _signInManager.SignOutAsync();
         }
     }
 }

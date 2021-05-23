@@ -39,7 +39,7 @@ namespace TeamManagement.BusinessLayer.Services
                 throw new UsernameAlreadyTakenException();
             }
             AppUser user = _mapper.Map<AppUser>(employee);
-            user.UserName = employee.FirstName + employee.LastName;
+            user.UserName = employee.Email;
             IdentityResult addUserResult = await _userManager.CreateAsync(user, employee.Password);
             await _identityService.AddToRoleAsync(new Guid(user.Id), user.Position);
             ValidateIdentityResult(addUserResult);

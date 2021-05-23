@@ -12,5 +12,6 @@ namespace TeamManagement.BusinessLayer.Services.Interfaces
         Task<AppUser> CreateUserAsync(UserCreateRequest userModel, string role);
         Task<IEnumerable<AppUser>> GetAllUsers();
         Task<SignInResult> LoginAsync(AuthSignInModel loginUserRequest);
+        Task LogOut();
     }
 }

@@ -23,6 +23,7 @@
             public const string Base = "auth";
             public const string BaseWithVersion = Version + "/" + Base;
             public const string Login = BaseWithVersion + "/login";
+            public const string Logout = BaseWithVersion + "/logout";
             public const string UserInfo = BaseWithVersion + "/user-info";
         }
 

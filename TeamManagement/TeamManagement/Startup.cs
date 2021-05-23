@@ -1,15 +1,10 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using TeamManagement.DataLayer.Domain.Models.Auth;
 using TeamManagement.Installers;
 using TeamManagement.Options;
 
@@ -32,41 +27,15 @@ namespace PortalForArbitrators
             {
                 o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/Login/Account/";
-
-                });
-
-            //var authOptions = Configuration.GetSection(nameof(TeamManagement.BusinessLayer.Options.AuthOptions)).Get<TeamManagement.BusinessLayer.Options.AuthOptions>();
 
 
-            //services.AddAuthentication(options =>
-            //{
-            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            //}).AddJwtBearer(o =>
-            //{
-            //    o.IncludeErrorDetails = true;
-
-            //    o.TokenValidationParameters = new TokenValidationParameters()
-            //    {
-            //        ValidateActor = false,
-            //        ValidIssuer = AuthOptions.ISSUER,
-            //        ValidAudience = AuthOptions.AUDIENCE,
-            //        ValidateIssuerSigningKey = true,
-            //        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
-            //        ValidateLifetime = true,
-            //    };
-            //});
-
-            //services.AddAuthentication().AddGoogle(options =>
-            //{
-            //    options.ClientId = authOptions.ClientID;
-            //    options.ClientSecret = authOptions.ClientSecret;
-
-            //});
+            services.ConfigureApplicationCookie(options =>
+            {
+                //options.LoginPath = "/Login/Account/";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.Domain = null;
+                options.Cookie.SameSite = SameSiteMode.None;
+            });
 
             services.AddAuthorization();
         }
@@ -113,6 +82,13 @@ namespace PortalForArbitrators
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.Use((context, next) =>
+            {
+                context.Response.Headers.Add("test", "Set-Cookie");
+
+                return next.Invoke();
             });
         }
     }

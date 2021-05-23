@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TeamManagement.BusinessLayer.Contracts.v1.Requests;
 using TeamManagement.BusinessLayer.Contracts.v1.Responses;
@@ -14,12 +16,15 @@ namespace TeamManagement.BusinessLayer.Services
         private readonly ICompanyRepository _companyRepository;
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
+        private readonly IGenericRepository<SubscriptionPlan> _subscriptionPlanRepository;
 
-        public CompanyService(IMapper mapper, ICompanyRepository companyRepository, IUserService userService)
+        public CompanyService(IMapper mapper, ICompanyRepository companyRepository, 
+            IUserService userService, IGenericRepository<SubscriptionPlan> genericRepository)
         {
             _companyRepository = companyRepository;
             _mapper = mapper;
             _userService = userService;
+            _subscriptionPlanRepository = genericRepository;
         }
 
         public async Task<CompanyCreateResponse> AddCompany(CompanyCreateRequest companyRequest)
@@ -27,12 +32,16 @@ namespace TeamManagement.BusinessLayer.Services
             UserCreateRequest user = new UserCreateRequest();
             user.Email = companyRequest.CeoEmail;
             user.Password = companyRequest.CeoPassword;
-            user.Username = companyRequest.CeoUserName;
+            user.FirstName = companyRequest.FirstName;
+            user.LastName = companyRequest.LastName;
             AppUser addedUser = await _userService.CreateUserAsync(user, "CEO");
+
+            var subscriptionPlansCollection = await _subscriptionPlanRepository.GetAsync();
+            List<SubscriptionPlan> subscriptionPlans = subscriptionPlansCollection.ToList();
 
             Company company = _mapper.Map<Company>(companyRequest);
             company.Subscription = new Subscription();
-            company.Subscription.SubscriptionPlanId = new Guid("83531015-3AA5-47DC-B651-0485708BBF03");
+            company.Subscription.SubscriptionPlanId = subscriptionPlans[0].Id;
             company.Subscription.Transaction = new Transaction();
             company.CeoId = addedUser.Id;
             company.CEO = addedUser;
