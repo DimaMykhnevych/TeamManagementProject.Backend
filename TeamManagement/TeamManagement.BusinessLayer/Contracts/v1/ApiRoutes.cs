@@ -107,6 +107,12 @@
             public const string Base = "events";
             public const string BaseWithVersion = Version + "/" + Base;
             public const string ChangeAttendingStatus = BaseWithVersion + "/changeAttending";
-        }    
+        }
+        
+        public static class TeamProject
+        {
+            public const string Base = "teamProject";
+            public const string BaseWithVersion = Version + "/" + Base;
+        }
     }
 }

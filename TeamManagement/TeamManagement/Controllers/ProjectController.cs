@@ -25,5 +25,12 @@ namespace TeamManagement.Controllers
                 await _projectService.CreateProject(projectCreateRequest, User.Identity.Name);
             return Ok(projectCreateResponse);
         }
+
+        [HttpGet(ApiRoutes.Project.BaseWithVersion)]
+        public async Task<IActionResult> GetProjects()
+        {
+            var projects = await _projectService.GetProjects();
+            return Ok(projects);
+        }
     }
 }

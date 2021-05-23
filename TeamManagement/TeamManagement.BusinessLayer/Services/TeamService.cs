@@ -44,5 +44,11 @@ namespace TeamManagement.BusinessLayer.Services
             }
             return _mapper.Map<TeamCreateResponse>(team);
         }
+
+        public async Task<IEnumerable<TeamGetResponse>> GetTeams()
+        {
+            IEnumerable<Team> teams = await _teamRepository.GetAsync();
+            return _mapper.Map<IEnumerable<TeamGetResponse>>(teams);
+        }
     }
 }

@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TeamManagement.BusinessLayer.Contracts.v1.Requests;
 using TeamManagement.BusinessLayer.Contracts.v1.Responses;
@@ -29,6 +32,15 @@ namespace TeamManagement.BusinessLayer.Services
             projectToAdd.CompanyId = currentUserWithCompany.Company.Id;
             await _projectRepository.CreateAsync(projectToAdd);
             return _mapper.Map<ProjectCreateResponse>(projectToAdd);
+        }
+
+        public async Task<IEnumerable<ProjectGetResponse>> GetProjects()
+        {
+            IEnumerable<Project> projects = 
+                await _projectRepository.GetAsync((proj) => proj.TeamProjects == null || !proj.TeamProjects.Any(), 
+                includeFunc: (proj) => proj.Include(p => p.TeamProjects));
+
+            return _mapper.Map<IEnumerable<ProjectGetResponse>>(projects);
         }
     }
 }

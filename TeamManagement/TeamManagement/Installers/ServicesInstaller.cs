@@ -26,6 +26,7 @@ namespace TeamManagement.Installers
 			services.AddTransient<ITeamService, TeamService>();
 			services.AddTransient<BaseAuthorizationService, AppUserAuthorizationService>();
 			services.AddTransient<IEmployeeRegistrationService, EmployeeRegistrationService>();
+			services.AddTransient<ITeamProjectService, TeamProjectService>();
 
 			services.AddTransient<IGenericRepository<Article>, BaseGenericRepository<Article>>();
 			services.AddTransient<IHowToArticlesRepository, HowToArticlesRepository>();
@@ -35,7 +36,7 @@ namespace TeamManagement.Installers
 			services.AddTransient<IGenericRepository<SubscriptionPlan>, BaseGenericRepository<SubscriptionPlan>>();
 			services.AddTransient<IGenericRepository<Subscription>, BaseGenericRepository<Subscription>>();
 			services.AddTransient<IGenericRepository<Transaction>, BaseGenericRepository<Transaction>>();
-
+			services.AddTransient<IGenericRepository<TeamProject>, BaseGenericRepository<TeamProject>>();
 			services.AddTransient<IGenericRepository<Event>, BaseGenericRepository<Event>>();
 			services.AddTransient<IProjectService, ProjectService>();
 			services.AddTransient<IGenericRepository<Project>, BaseGenericRepository<Project>>();

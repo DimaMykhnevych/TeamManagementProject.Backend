@@ -29,5 +29,12 @@ namespace TeamManagement.Controllers
             TeamCreateResponse teamCreateResponse = await _teamService.CreateTeam(teamCreateRequest, User.Identity.Name);
             return Ok(teamCreateResponse);
         }
+
+        [HttpGet(ApiRoutes.Team.BaseWithVersion)]
+        public async Task<IActionResult> GetTeams()
+        {
+            var teams = await _teamService.GetTeams();
+            return Ok(teams);
+        }
     }
 }
