@@ -43,7 +43,7 @@ namespace TeamManagement.Controllers
 
             var report = _mapper.Map<Report>(creationRequest);
             report.PublisherId = appUserId;
-            report.DateOfPublishsing = DateTime.Now;
+            report.DateOfPublishing = DateTime.Now;
 
             if (await _genericReportRepository.CreateAsync(report))
             {
@@ -54,10 +54,10 @@ namespace TeamManagement.Controllers
         }
 
         [HttpGet(ApiRoutes.Report.BaseWithVersion)]
-        public async Task<IActionResult> GetReports()
+        public async Task<IActionResult> GetReports([FromQuery] GetReportPageRequest request)
         {
             var reports = await _genericReportRepository.GetAsync(includeFunc: reports => reports.Include(report => report.Publisher).ThenInclude(p => p.Team).Include(ev => ev.ReportRecords),
-                                                              filter: ev => ev.Publisher.TeamId == (_identityService.GetAppUserTeam(this.User)).Result.Id, orderBy: rep => rep.OrderBy(rep => rep.DateOfPublishsing)); ;
+                                                              filter: ev => ev.Publisher.TeamId == (_identityService.GetAppUserTeam(this.User)).Result.Id && ev.DateOfPublishing.Year == request.Date.Year && ev.DateOfPublishing.Month == request.Date.Month && ev.DateOfPublishing.Day == request.Date.Day, orderBy: rep => rep.OrderByDescending(rep => rep.DateOfPublishing)); ;
 
             var response = _mapper.Map<List<GetReportsResponse>>(reports);
 

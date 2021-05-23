@@ -9,7 +9,7 @@ namespace TeamManagement.DataLayer.Domain.Models
     {
         public Guid Id { get; set; }
         [Required]
-        public DateTime DateOfPublishsing { get; set; }
+        public DateTime DateOfPublishing { get; set; }
         public string AdditionalComment { get; set; }
 
         public string PublisherId { get; set; }
