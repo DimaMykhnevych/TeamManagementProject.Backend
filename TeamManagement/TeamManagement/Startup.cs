@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,6 +27,17 @@ namespace PortalForArbitrators
             {
                 o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
+
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                //options.LoginPath = "/Login/Account/";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.Domain = null;
+                options.Cookie.SameSite = SameSiteMode.None;
+            });
+
+            services.AddAuthorization();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -65,9 +77,18 @@ namespace PortalForArbitrators
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseCookiePolicy();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.Use((context, next) =>
+            {
+                context.Response.Headers.Add("test", "Set-Cookie");
+
+                return next.Invoke();
             });
         }
     }

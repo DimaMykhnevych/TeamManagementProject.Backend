@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamManagement.DataLayer.Data;
 
 namespace TeamManagement.DataLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210523103108_ChangeSubscriptionPlanRelation")]
+    partial class ChangeSubscriptionPlanRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -500,42 +502,26 @@ namespace TeamManagement.DataLayer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AdditionalComment")
+                    b.Property<string>("Active")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DateOfPublishing")
+                    b.Property<string>("CodeReview")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateOfPublishsing")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PublisherId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Resolved")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PublisherId");
 
                     b.ToTable("Reports");
-                });
-
-            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.ReportRecord", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("RecordName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ReportId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
-
-                    b.ToTable("ReportRecord");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Subscription", b =>
@@ -863,17 +849,6 @@ namespace TeamManagement.DataLayer.Migrations
                     b.Navigation("Publisher");
                 });
 
-            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.ReportRecord", b =>
-                {
-                    b.HasOne("TeamManagement.DataLayer.Domain.Models.Report", "Report")
-                        .WithMany("ReportRecords")
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Report");
-                });
-
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Subscription", b =>
                 {
                     b.HasOne("TeamManagement.DataLayer.Domain.Models.SubscriptionPlan", "SubscriptionPlan")
@@ -963,11 +938,6 @@ namespace TeamManagement.DataLayer.Migrations
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Project", b =>
                 {
                     b.Navigation("TeamProjects");
-                });
-
-            modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Report", b =>
-                {
-                    b.Navigation("ReportRecords");
                 });
 
             modelBuilder.Entity("TeamManagement.DataLayer.Domain.Models.Subscription", b =>
