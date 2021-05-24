@@ -13,6 +13,7 @@ using TeamManagement.BusinessLayer.Services.Interfaces;
 using TeamManagement.DataLayer.Repositories.Interfaces;
 using TeamManagement.DataLayer.Domain.Models;
 using System.Collections.Generic;
+using TeamManagement.BusinessLayer.Contracts.v1.Requests;
 
 namespace TeamManagement.Controllers
 {
@@ -59,6 +60,7 @@ namespace TeamManagement.Controllers
                                                               filter: poll => poll.TeamId == (_identityService.GetAppUserTeam(this.User)).Result.Id);
 
             var response = _mapper.Map<List<GetPollsResponse>>(polls);
+            var appUserId = (await _identityService.GetAppUserAsync(this.User)).Id;
 
             foreach (var poll in response)
             {
@@ -69,6 +71,30 @@ namespace TeamManagement.Controllers
             }
 
             return Ok(response);
+        }
+
+        [HttpDelete(ApiRoutes.Polls.BaseWithVersion)]
+        public async Task<IActionResult> DeletePoll([FromQuery] PollDeleteRequest request)
+        {
+            if (await _genericPollRepository.DeleteAsync(request.Id))
+            {
+                return Ok();
+            }
+
+            return StatusCode(500);
+        }
+
+        [HttpPut(ApiRoutes.Polls.BaseWithVersion)]
+        public async Task<IActionResult> UpdatePoll([FromBody] PollUpdateRequest request)
+        {
+            var poll = await _genericPollRepository.GetByIdAsync(request.Id); 
+
+            if (await _genericPollRepository.UpdateAsync(poll))
+            {
+                return Ok();
+            }
+
+            return StatusCode(500);
         }
 
         [HttpPost(ApiRoutes.Polls.MakeVote)]

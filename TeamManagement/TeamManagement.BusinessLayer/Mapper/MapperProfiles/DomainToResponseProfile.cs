@@ -69,7 +69,10 @@ namespace TeamManagement.BusinessLayer.Mapper.MapperProfiles
             });
 
             CreateMap<Option, GetPollsOptionsResponse>();
-            CreateMap<Poll, GetPollsResponse>().AfterMap((poll, response) => response.CreatedByName = poll.CreatedBy.FirstName + " " + poll.CreatedBy.LastName);
+            CreateMap<Poll, GetPollsResponse>().AfterMap((poll, response) => response.CreatedByName = poll.CreatedBy.FirstName + " " + poll.CreatedBy.LastName)
+                .ForMember(response => response.IsMadeByUser, options =>
+                options.MapFrom<PollCreatedByResolver>()
+            );
             CreateMap<Company, CompanyCreateResponse>().ReverseMap();
             CreateMap<Company, CompanyGetByIdResponse>().ReverseMap();
             CreateMap<SubscriptionPlan, SubscriptionPlanGetResponse>().ReverseMap();

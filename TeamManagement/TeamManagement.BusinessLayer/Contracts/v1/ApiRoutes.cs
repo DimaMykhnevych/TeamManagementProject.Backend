@@ -48,6 +48,7 @@
             public const string Base = "polls";
             public const string BaseWithVersion = Version + "/" + Base;
             public const string MakeVote = BaseWithVersion + "/make-vote";
+            public const string GetById = BaseWithVersion + "/getById";
         }
         public static class Company
         {
