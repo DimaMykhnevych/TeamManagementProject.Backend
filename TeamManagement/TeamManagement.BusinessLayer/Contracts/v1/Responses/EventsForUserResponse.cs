@@ -11,6 +11,7 @@ namespace TeamManagement.Contracts.v1.Responses
         public string Description { get; set; }
         public string Id { get; set; }
         public string Passcode { get; set; }
+        public bool IsMadeByUser { get; set; }
         public DateTime DateTime { get; set; }
         public List<AttendiesResponse> Attendies { get; set; }
     }

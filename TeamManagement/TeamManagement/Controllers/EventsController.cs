@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TeamManagement.Authorization;
+using TeamManagement.BusinessLayer.Contracts.v1.Requests;
 using TeamManagement.BusinessLayer.Services.Interfaces;
 using TeamManagement.Contracts.v1;
 using TeamManagement.Contracts.v1.Requests;
@@ -61,15 +62,26 @@ namespace TeamManagement.Controllers
         }
 
         [HttpGet(ApiRoutes.Event.BaseWithVersion)]
-        public async Task<IActionResult> GetEvents()
+        public async Task<IActionResult> GetEvents([FromQuery] GetEventsPageRequest request)
         {
             var currUserId = (await _identityService.GetAppUserAsync(this.User)).Id;
 
-            var events = await _genericEventRepository.GetAsync(includeFunc: ev => ev.Include(evv => evv.AppUserEvents).ThenInclude(aue => aue.AppUser), filter: ev => (ev.AppUserEvents.Any(aue => aue.AppUserId == currUserId) || ev.CreatedById == currUserId));
+            var events = await _genericEventRepository.GetAsync(includeFunc: ev => ev.Include(evv => evv.AppUserEvents).ThenInclude(aue => aue.AppUser), filter: ev => (ev.AppUserEvents.Any(aue => aue.AppUserId == currUserId) || ev.CreatedById == currUserId) && ev.DateTime.Year == request.Date.Year && ev.DateTime.Month == request.Date.Month && ev.DateTime.Day == request.Date.Day, orderBy: rep => rep.OrderByDescending(rep => rep.DateTime));
 
             var eventsResponse = _mapper.Map<List<EventsForUserResponse>>(events);
 
             return Ok(eventsResponse);
+        }
+
+        [HttpDelete(ApiRoutes.Event.BaseWithVersion)]
+        public async Task<IActionResult> DeleteEvent([FromQuery] EventDeleteRequest request)
+        {
+            if (await _genericEventRepository.DeleteAsync(request.Id))
+            {
+                return Ok();
+            }
+
+            return StatusCode(500);
         }
 
         [HttpPut(ApiRoutes.Event.ChangeAttendingStatus)]

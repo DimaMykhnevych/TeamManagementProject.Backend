@@ -52,7 +52,9 @@ namespace TeamManagement.BusinessLayer.Mapper.MapperProfiles
                 {
                     response.Attendies.Add(new AttendiesResponse { Email = att.AppUser.Email, Id = att.AppUser.Id, Status = att.Status });
                 }
-            });
+            }).ForMember(response => response.IsMadeByUser, options =>
+                options.MapFrom<EventIsMadeByUserResolver>());
+
             CreateMap<Report, GetReportsResponse>().AfterMap((rep, response) =>
             {
                 foreach(var rec in rep.ReportRecords)

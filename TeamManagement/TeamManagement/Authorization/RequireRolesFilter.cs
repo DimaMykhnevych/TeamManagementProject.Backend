@@ -19,11 +19,12 @@ namespace TeamManagement.Authorization
             _identityService = identityService;
         }
 
-        public void OnAuthorization(AuthorizationFilterContext context)
+        public async void OnAuthorization(AuthorizationFilterContext context)
         {
             var user = context.HttpContext.User;
             var isAuthenticated = user.Identity.IsAuthenticated;
             var isInRole = new List<bool>();
+            var currAppUser = await _identityService.GetAppUserAsync(user);
 
             if (!isAuthenticated)
             {
@@ -33,7 +34,7 @@ namespace TeamManagement.Authorization
 
             _roles.ToList()
                   .ForEach(role => isInRole.Add(
-                      _identityService.HasRole(user.FindFirstValue(ClaimTypes.Name), role).Result
+                      currAppUser.Position == role
                   ));
 
             if (isInRole.Contains(false))

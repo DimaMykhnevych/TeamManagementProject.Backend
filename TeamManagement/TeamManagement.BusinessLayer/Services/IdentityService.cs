@@ -47,7 +47,24 @@ namespace TeamManagement.BusinessLayer.Services
         public async Task<bool> TryLoginAsync()
         {
             var information = await GetInfoAsync();
+
             if (information == null)
+            {
+                return false;
+            }
+
+            string email = information.Principal.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
+            var logins = await _userManager.GetLoginsAsync(user);
+
+            if (user != null)
+            {
+                if (logins == null || logins.Count == 0)
+                {
+                    await _userManager.AddLoginAsync(user, information);
+                }
+            }
+            else
             {
                 return false;
             }
@@ -55,37 +72,6 @@ namespace TeamManagement.BusinessLayer.Services
             var signinResult = await _signInManager
                 .ExternalLoginSignInAsync(information.LoginProvider, information.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             return signinResult.Succeeded;
-        }
-
-        public async Task<bool> RegisterAsync()
-        {
-            var information = await GetInfoAsync();
-            string[] names = information.Principal.Identity.Name.Split(' ');
-            string email = information.Principal.FindFirstValue(ClaimTypes.Email);
-
-            var user = new AppUser
-            {
-                UserName = email,
-                Email = email,
-                FirstName = names[0],
-                LastName = names[1]
-            };
-
-            var result = await _userManager.CreateAsync(user);
-            if (result.Succeeded)
-            {
-                result = await _userManager.AddLoginAsync(user, information);
-                if (result.Succeeded)
-                {
-                    await _signInManager.SignInAsync(user, isPersistent: false, information.LoginProvider);
-                    return true;
-                }
-                else
-                {
-                    await _userManager.DeleteAsync(user);
-                }
-            }
-            return false;
         }
 
         public async Task<bool> IsDomainAllowedAsync()

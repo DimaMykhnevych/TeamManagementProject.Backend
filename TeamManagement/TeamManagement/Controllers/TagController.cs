@@ -23,14 +23,14 @@ namespace TeamManagement.Controllers
             this._mapper = mapper;
         }
 
-        [RequireRoles("Administrator")]
+        [RequireRoles("TeamLead,CEO,Employee")]
         [HttpGet(ApiRoutes.Tags.BaseWithVersion)]
         public async Task<IActionResult> Get()
         {
             return Ok(await _genericRepository.GetAsync());
         }
 
-        [RequireRoles("Administrator")]
+        [RequireRoles("TeamLead,CEO,Employee")]
         [HttpPost(ApiRoutes.Tags.BaseWithVersion)]
         public async Task<IActionResult> Post([FromBody] TagCreateRequest request)
         {

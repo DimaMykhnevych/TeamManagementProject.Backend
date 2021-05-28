@@ -31,7 +31,7 @@ namespace TeamManagement.Controllers
         }
 
         [HttpPost(ApiRoutes.Articles.BaseWithVersion)]
-        [RequireRoles("Administrator")]
+        [RequireRoles("TeamLead,CEO,Employee")]
         public async Task<IActionResult> CreateArticle([FromBody] ArticleCreateRequest creationRequest)
         {
             if (!ModelState.IsValid)

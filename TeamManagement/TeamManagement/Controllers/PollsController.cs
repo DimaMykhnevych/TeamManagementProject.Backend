@@ -32,7 +32,7 @@ namespace TeamManagement.Controllers
         }
 
         [HttpPost(ApiRoutes.Polls.BaseWithVersion)]
-        [RequireRoles("Administrator")]
+        [RequireRoles("TeamLead,CEO,Employee")]
         public async Task<IActionResult> CreatePoll([FromBody] CreatePollRequest creationRequest)
         {
             if (!ModelState.IsValid)
@@ -87,7 +87,28 @@ namespace TeamManagement.Controllers
         [HttpPut(ApiRoutes.Polls.BaseWithVersion)]
         public async Task<IActionResult> UpdatePoll([FromBody] PollUpdateRequest request)
         {
-            var poll = await _genericPollRepository.GetByIdAsync(request.Id); 
+            var poll = await _genericPollRepository.GetByIdAsync(request.Id, includeFunc: polls => polls.Include(poll => poll.Options).ThenInclude(opt => opt.AppUserOptions).ThenInclude(opt => opt.AppUser));
+            poll.Name = request.Name;
+            poll.DoesAllowMultiple = request.DoesAllowMultiple;
+            var options = _mapper.Map<List<Option>>(request.Options);
+
+            for (int i = poll.Options.Count - 1; i >= 0; i--)
+            {
+                if (!options.Any(opt => opt.Id == poll.Options[i].Id))
+                {
+                    poll.Options.RemoveAt(i);
+                }
+            }
+
+            foreach(var option in options)
+            {
+                if (option.Id == Guid.Empty)
+                {
+                    poll.Options.Add(option);
+                }
+            }
+
+            CountOptions(poll);
 
             if (await _genericPollRepository.UpdateAsync(poll))
             {
@@ -97,14 +118,28 @@ namespace TeamManagement.Controllers
             return StatusCode(500);
         }
 
+        [HttpGet(ApiRoutes.Polls.GetById)]
+        public async Task<IActionResult> GetById([FromQuery] Guid Id)
+        {
+            var poll = await _genericPollRepository.GetByIdAsync(Id, includeFunc: polls => polls.Include(poll => poll.Options).ThenInclude(opt=>opt.AppUserOptions));
+
+            var pollResponse = _mapper.Map<GetPollsResponse>(poll);
+
+            if (pollResponse != null)
+            {
+                return Ok(pollResponse);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         [HttpPost(ApiRoutes.Polls.MakeVote)]
         public async Task<IActionResult> MakeVote([FromBody] MakeVoteRequest request)
         {
             var poll = await _genericPollRepository.GetByIdAsync(request.PollId, polls => polls.Include(poll => poll.Options).ThenInclude(opt => opt.AppUserOptions));
             var appUserId = (await _identityService.GetAppUserAsync(this.User)).Id;
-            var wasVoted = false;
-            var wasUserNotDeleted = true;
-
             var hasUserAlreadyVotedOnThatPoll = poll.Options.Any(opt => opt.AppUserOptions.Any(au => au.AppUserId == appUserId));
 
             foreach (var option in poll.Options)
@@ -122,21 +157,13 @@ namespace TeamManagement.Controllers
                         }
 
                         option.AppUserOptions.Add(new AppUserOption() { OptionId = Guid.Parse(request.OptionId), AppUserId = appUserId });
-                        wasVoted = true;
                     }
                     else
                     {
                         var auo = option.AppUserOptions.FirstOrDefault(auo => auo.AppUserId == appUserId);
                         option.AppUserOptions.Remove(auo);
-                        poll.CountOfPeopleVoted--;
-                        wasUserNotDeleted = false;
                     }
                 }
-            }
-
-            if (!hasUserAlreadyVotedOnThatPoll || (poll.DoesAllowMultiple && wasVoted) && wasUserNotDeleted)
-            {
-                poll.CountOfPeopleVoted++;
             }
 
             CountOptions(poll);
@@ -158,9 +185,14 @@ namespace TeamManagement.Controllers
 
         private void CountOptions(Poll poll)
         {
+            var totalNumberOfPeople = poll.Options.Where(opt => opt.AppUserOptions != null).SelectMany(p => p.AppUserOptions).Select(p => p.AppUser).Count();
+            poll.CountOfPeopleVoted = totalNumberOfPeople;
             foreach(var option in poll.Options)
             {
-                option.Value = option.AppUserOptions.Count != 0 ? ((float)option.AppUserOptions.Count / (float)poll.CountOfPeopleVoted) * 100 : 0;
+                if (option.AppUserOptions != null)
+                {
+                    option.Value = option.AppUserOptions.Count != 0 ? ((float)option.AppUserOptions.Count / (float)poll.CountOfPeopleVoted) * 100 : 0;
+                }
             }
         }
     }

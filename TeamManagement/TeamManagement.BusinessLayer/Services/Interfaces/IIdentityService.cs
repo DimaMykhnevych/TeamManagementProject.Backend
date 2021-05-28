@@ -14,7 +14,6 @@ namespace TeamManagement.BusinessLayer.Services.Interfaces
         ChallengeResultData Authenticate(string callbackUrl);
         Task<bool> IsDomainAllowedAsync();
         Task<bool> TryLoginAsync();
-        Task<bool> RegisterAsync();
         string GetRedirectUrl();
         Task<AppUser> GetAppUserAsync(ClaimsPrincipal claimsPrincipal);
         Task<AppUser> GetAppUserAsync(Guid Id);

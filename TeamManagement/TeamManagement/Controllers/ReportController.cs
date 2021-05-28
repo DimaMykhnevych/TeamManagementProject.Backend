@@ -30,7 +30,7 @@ namespace TeamManagement.Controllers
         }
 
         [HttpPost(ApiRoutes.Report.BaseWithVersion)]
-        [RequireRoles("Administrator")]
+        [RequireRoles("TeamLead,CEO,Employee")]
         public async Task<IActionResult> CreateReport([FromBody] CreateReportRequest creationRequest)
         {
             if (!ModelState.IsValid)

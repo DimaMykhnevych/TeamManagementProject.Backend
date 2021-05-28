@@ -14,7 +14,7 @@ namespace TeamManagement.BusinessLayer.Mapper.Resolvers
         }
         public bool Resolve(AppUser source, GetUserResponse destination, bool destMember, ResolutionContext context)
         {
-            return _identityService.HasRole(source.Email, "Administrator").Result;
+            return source.Position == "TeamLead" || source.Position == "ProjectManager" || source.Position == "CEO";
         }
     }
 }

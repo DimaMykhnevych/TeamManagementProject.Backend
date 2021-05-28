@@ -44,7 +44,7 @@ namespace TeamManagement.Controllers
                 return BadRequest(new { message = $"Error from external provider: {remoteError}" });
             }
 
-            if (!await _identityService.IsDomainAllowedAsync())
+                                                                                                                                                                                                                      if (!await _identityService.IsDomainAllowedAsync())
             {
                 return BadRequest(new { message = "Your domain isn't allowed to access this website." });
             }
@@ -56,13 +56,7 @@ namespace TeamManagement.Controllers
             {
                 return Redirect(alterCookieUrl);
             }
-            else
-            {
-                if (await _identityService.RegisterAsync())
-                {
-                    return Redirect(alterCookieUrl);
-                }
-            }
+
             return BadRequest(new { message = "Registration failed." });
         }
 
@@ -102,7 +96,7 @@ namespace TeamManagement.Controllers
 
 
         [HttpPut(ApiRoutes.Identity.MakeAdmin)]
-        [RequireRoles("Administrator")]
+        [RequireRoles("TeamLead,CEO,Employee")]
         public async Task<IActionResult> MakeAdmin(Guid id)
         {
             if (id == Guid.Empty)
@@ -122,7 +116,7 @@ namespace TeamManagement.Controllers
         }
 
         [HttpGet(ApiRoutes.Identity.GetUsers)]
-        [RequireRoles("Administrator")]
+        [RequireRoles("TeamLead,CEO,Employee")]
         public async Task<IActionResult> GetUsers()
         {
             var users = await _identityService.GetAllUsersAsync();
