@@ -95,6 +95,7 @@
         {
             public const string Base = "team";
             public const string BaseWithVersion = Version + "/" + Base;
+            public const string GetById = BaseWithVersion + "/getById";
         }
 
         public static class User

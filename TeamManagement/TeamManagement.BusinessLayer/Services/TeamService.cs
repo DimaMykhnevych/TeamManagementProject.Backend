@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TeamManagement.BusinessLayer.Contracts.v1.Requests;
@@ -49,6 +51,20 @@ namespace TeamManagement.BusinessLayer.Services
         {
             IEnumerable<Team> teams = await _teamRepository.GetAsync();
             return _mapper.Map<IEnumerable<TeamGetResponse>>(teams);
+        }
+
+        public async Task<TeamGetResponse> GetTeamById(Guid id)
+        {
+            Team team = await _teamRepository.GetByIdAsync(id, includeFunc: teams => teams.Include(team => team.Members));
+            return _mapper.Map<TeamGetResponse>(team);
+        }
+
+        public async void UpdateTeam(TeamCreateRequest teamCreateRequest)
+        {
+            Team team = await _teamRepository.GetByIdAsync(teamCreateRequest.Id, includeFunc: teams => teams.Include(team => team.Members));
+            team.TeamName = teamCreateRequest.TeamName;
+            team.Members = teamCreateRequest.Members;
+            await _teamRepository.UpdateAsync(team);
         }
     }
 }
