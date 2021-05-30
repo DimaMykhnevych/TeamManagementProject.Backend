@@ -14,6 +14,8 @@ namespace TeamManagement.DataLayer.Domain.Models
         public Guid Id { get; set; }
         public string Label { get; set; }
 
+        public Guid? TeamId { get; set; }
+
         public ICollection<Article> Articles { get; set; }
     }
 }

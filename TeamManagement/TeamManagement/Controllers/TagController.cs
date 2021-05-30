@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -19,19 +20,23 @@ namespace TeamManagement.Controllers
         private readonly IGenericRepository<Tag> _genericRepository;
         private readonly IMapper _mapper;
         private readonly AppDbContext _context;
+        private readonly UserManager<AppUser> _userManager;
 
-        public TagController(IGenericRepository<Tag> genericRepository, IMapper mapper, AppDbContext context)
+        public TagController(IGenericRepository<Tag> genericRepository, 
+            IMapper mapper, AppDbContext context, UserManager<AppUser> userManager)
         {
             _genericRepository = genericRepository;
             this._mapper = mapper;
             _context = context;
+            _userManager = userManager;
         }
 
         [RequireRoles("TeamLead,CEO,Employee")]
         [HttpGet(ApiRoutes.Tags.BaseWithVersion)]
         public async Task<IActionResult> Get()
         {
-            var tags = await _context.Tags.ToListAsync();
+            AppUser currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            var tags = await _context.Tags.Where(t => t.TeamId == currentUser.TeamId).ToListAsync();
             return Ok(tags);
         }
 
@@ -46,6 +51,8 @@ namespace TeamManagement.Controllers
             }
 
             var tag = _mapper.Map<Tag>(request);
+            AppUser currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            tag.TeamId = currentUser.TeamId;
 
             if (await _genericRepository.CreateAsync(tag))
             {

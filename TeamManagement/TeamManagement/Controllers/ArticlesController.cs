@@ -13,6 +13,7 @@ using TeamManagement.BusinessLayer.Services.Interfaces;
 using TeamManagement.DataLayer.Repositories.Interfaces;
 using TeamManagement.DataLayer.Domain.Models;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace TeamManagement.Controllers
 {
@@ -23,12 +24,15 @@ namespace TeamManagement.Controllers
         private readonly IIdentityService _identityService;
         private readonly IGenericRepository<Article> _genericArticleRepository;
         private readonly IMapper _mapper;
+        private readonly UserManager<AppUser> _userManager;
 
-        public ArticlesController(IIdentityService identityService, IGenericRepository<Article> genericArticleRepository, IMapper mapper)
+        public ArticlesController(IIdentityService identityService, IGenericRepository<Article> genericArticleRepository,
+            IMapper mapper, UserManager<AppUser> userManager)
         {
             _identityService = identityService;
             _genericArticleRepository = genericArticleRepository;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         [HttpPost(ApiRoutes.Articles.BaseWithVersion)]
@@ -128,6 +132,7 @@ namespace TeamManagement.Controllers
         [HttpGet(ApiRoutes.Articles.BaseWithVersion)]
         public async Task<IActionResult> Get(bool grouped)
         {
+            AppUser currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
             if (grouped)
             {
                 var responseArticles = await _genericArticleRepository.GetWithGroupByAsync(
@@ -135,10 +140,12 @@ namespace TeamManagement.Controllers
                     group => new ArticleGetResponse
                     {
                         Tag = group.Key.ToString(),
-                        Articles = group.Select(article => _mapper.Map<ArticleMenuResponse>(article)).ToList()
+                        Articles = group
+                        .Select(article => _mapper.Map<ArticleMenuResponse>(article))
+                        .ToList()
                     },
                     article => article.Include(article => article.Tag),
-                    article => article.Status == "Published");
+                    article => article.Status == "Published" && article.Tag.TeamId == currentUser.TeamId);
 
                 return Ok(responseArticles);
             }

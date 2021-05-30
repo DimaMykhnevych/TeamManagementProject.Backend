@@ -15,5 +15,6 @@ namespace TeamManagement.DataLayer.Domain.Models
         public Company Company { get; set; }
         public List<TeamProject> TeamProjects { get; set; }
         public List<Poll> Polls { get; set; }
+        public List<Tag> Tags { get; set; }
     }
 }
