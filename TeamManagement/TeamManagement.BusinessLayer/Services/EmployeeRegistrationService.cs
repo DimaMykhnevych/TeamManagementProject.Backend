@@ -79,6 +79,17 @@ namespace TeamManagement.BusinessLayer.Services
             return user;
         }
 
+        public async Task<bool> DeleteEmployee(string id)
+        {
+            AppUser user = await _userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                await _userManager.DeleteAsync(user);
+                return true;
+            }
+            return false;
+        }
+
         private void ValidateIdentityResult(IdentityResult result)
         {
             if (!result.Succeeded)

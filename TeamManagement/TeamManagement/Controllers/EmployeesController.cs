@@ -47,5 +47,16 @@ namespace TeamManagement.Controllers
             AppUser user = await _employeeRegistrationService.UpdateEmployee(employee);
             return Ok(user);
         }
+
+        [HttpDelete(ApiRoutes.Employee.Delete)]
+        public async Task<IActionResult> DeleteEmployee(string id)
+        {
+            bool res = await _employeeRegistrationService.DeleteEmployee(id);
+            if (res)
+            {
+                return Ok(res);
+            }
+            return BadRequest(res);
+        }
     }
 }

@@ -11,5 +11,6 @@ namespace TeamManagement.BusinessLayer.Services.Interfaces
         Task<IEnumerable<AppUser>> GetAllEmployeesExceptCeo();
         Task<IEnumerable<AppUser>> GetEmployees();
         Task<AppUser> UpdateEmployee(EmployeeUpdateRequest employeeToUpdate);
+        Task<bool> DeleteEmployee(string id);
     }
 }
