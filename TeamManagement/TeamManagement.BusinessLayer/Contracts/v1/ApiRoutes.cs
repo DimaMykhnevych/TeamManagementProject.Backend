@@ -91,6 +91,7 @@
         {
             public const string Base = "project";
             public const string BaseWithVersion = Version + "/" + Base;
+            public const string AllProjects = BaseWithVersion + "/all-projects";
         }
 
         public static class Team

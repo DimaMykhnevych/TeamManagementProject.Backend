@@ -32,5 +32,19 @@ namespace TeamManagement.Controllers
             var projects = await _projectService.GetProjects();
             return Ok(projects);
         }
+
+        [HttpGet(ApiRoutes.Project.AllProjects)]
+        public async Task<IActionResult> GetAllProjects()
+        {
+            var projects = await _projectService.GetAllProjects();
+            return Ok(projects);
+        }
+
+        [HttpPut(ApiRoutes.Project.BaseWithVersion)]
+        public async Task<IActionResult> UpdateProject([FromBody]ProjectUpdateRequest projectUpdate)
+        {
+            var project = await _projectService.UpdateProject(projectUpdate);
+            return Ok(project);
+        }
     }
 }

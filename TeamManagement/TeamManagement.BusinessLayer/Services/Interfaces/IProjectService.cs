@@ -9,5 +9,7 @@ namespace TeamManagement.BusinessLayer.Services.Interfaces
     {
         Task<ProjectCreateResponse> CreateProject(ProjectCreateRequest projectCreateRequest, string currentUserName);
         Task<IEnumerable<ProjectGetResponse>> GetProjects();
+        Task<IEnumerable<ProjectGetResponse>> GetAllProjects();
+        Task<ProjectGetResponse> UpdateProject(ProjectUpdateRequest projectUpdate);
     }
 }

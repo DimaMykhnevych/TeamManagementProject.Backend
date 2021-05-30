@@ -42,5 +42,22 @@ namespace TeamManagement.BusinessLayer.Services
 
             return _mapper.Map<IEnumerable<ProjectGetResponse>>(projects);
         }
+
+        public async Task<IEnumerable<ProjectGetResponse>> GetAllProjects()
+        {
+            IEnumerable<Project> projects = await _projectRepository.GetAsync();
+            return _mapper.Map<IEnumerable<ProjectGetResponse>>(projects);
+        }
+
+        public async Task<ProjectGetResponse> UpdateProject(ProjectUpdateRequest projectUpdate)
+        {
+            Project project = await _projectRepository.GetByIdAsync(projectUpdate.Id);
+            project.Name = projectUpdate.Name;
+            project.ProjectDescription = projectUpdate.ProjectDescription;
+            project.StartDate = projectUpdate.StartDate;
+            project.EndDate = projectUpdate.EndDate;
+            await _projectRepository.UpdateAsync(project);
+            return _mapper.Map<ProjectGetResponse>(project);
+        }
     }
 }

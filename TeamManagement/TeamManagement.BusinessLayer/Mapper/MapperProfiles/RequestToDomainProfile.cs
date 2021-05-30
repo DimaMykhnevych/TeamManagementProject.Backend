@@ -75,6 +75,7 @@ namespace TeamManagement.BusinessLayer.Mapper.MapperProfiles
             CreateMap<Team, TeamCreateRequest>().ReverseMap();
             CreateMap<TeamProject, TeamProjectCreateRequest>().ReverseMap();
             CreateMap<AppUser, EmployeeUpdateRequest>().ReverseMap();
+            CreateMap<Project, ProjectUpdateRequest>().ReverseMap();
         }
     }
 }
