@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using TeamManagement.Authorization;
 using TeamManagement.Contracts.v1;
 using TeamManagement.Contracts.v1.Requests;
+using TeamManagement.DataLayer.Data;
 using TeamManagement.DataLayer.Domain.Models;
 using TeamManagement.DataLayer.Repositories.Interfaces;
 
@@ -16,18 +18,21 @@ namespace TeamManagement.Controllers
     {
         private readonly IGenericRepository<Tag> _genericRepository;
         private readonly IMapper _mapper;
+        private readonly AppDbContext _context;
 
-        public TagController(IGenericRepository<Tag> genericRepository, IMapper mapper)
+        public TagController(IGenericRepository<Tag> genericRepository, IMapper mapper, AppDbContext context)
         {
             _genericRepository = genericRepository;
             this._mapper = mapper;
+            _context = context;
         }
 
         [RequireRoles("TeamLead,CEO,Employee")]
         [HttpGet(ApiRoutes.Tags.BaseWithVersion)]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _genericRepository.GetAsync());
+            var tags = await _context.Tags.ToListAsync();
+            return Ok(tags);
         }
 
         [RequireRoles("TeamLead,CEO,Employee")]
