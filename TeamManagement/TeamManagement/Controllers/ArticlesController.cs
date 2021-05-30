@@ -12,6 +12,7 @@ using TeamManagement.Contracts.v1.Responses;
 using TeamManagement.BusinessLayer.Services.Interfaces;
 using TeamManagement.DataLayer.Repositories.Interfaces;
 using TeamManagement.DataLayer.Domain.Models;
+using System.Collections.Generic;
 
 namespace TeamManagement.Controllers
 {
@@ -151,9 +152,10 @@ namespace TeamManagement.Controllers
         [HttpGet(ApiRoutes.Articles.GetForCurrentUser)]
         public async Task<IActionResult> GetArticlesForCurrentUser()
         {
-            var articles = await _genericArticleRepository.GetWithSelectAsync(article => _mapper.Map<ArticleMenuResponse>(article),
-                                                                              article => article.Publisher.UserName == User.Identity.Name);
-            return Ok(articles);
+            var articles = (await _genericArticleRepository.GetAsync(includeFunc : articles => articles.Include(article => article.Publisher),
+                                                                             filter: article => article.Publisher.UserName == User.Identity.Name));
+            var response = _mapper.Map<List<ArticleMenuResponse>>(articles);
+            return Ok(response);
         }
     }
 }
