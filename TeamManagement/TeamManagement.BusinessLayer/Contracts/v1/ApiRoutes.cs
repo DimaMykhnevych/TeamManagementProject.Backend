@@ -83,6 +83,7 @@
         {
             public const string Base = "employee";
             public const string BaseWithVersion = Version + "/" + Base;
+            public const string AllEmployees = BaseWithVersion + "/all-employees";
         }
 
         public static class Project
