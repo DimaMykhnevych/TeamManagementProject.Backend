@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 using TeamManagement.BusinessLayer.Contracts.v1.Requests;
 using TeamManagement.BusinessLayer.Contracts.v1.Responses;
@@ -45,6 +46,17 @@ namespace TeamManagement.Controllers
         {
             var project = await _projectService.UpdateProject(projectUpdate);
             return Ok(project);
+        }
+
+        [HttpDelete(ApiRoutes.Project.Delete)]
+        public async Task<IActionResult> DeleteProject(Guid id)
+        {
+            bool res = await _projectService.DeleteProject(id);
+            if (res)
+            {
+                return Ok(res);
+            }
+            return BadRequest(res);
         }
     }
 }

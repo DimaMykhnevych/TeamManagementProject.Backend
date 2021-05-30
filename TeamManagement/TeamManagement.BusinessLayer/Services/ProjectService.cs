@@ -59,5 +59,16 @@ namespace TeamManagement.BusinessLayer.Services
             await _projectRepository.UpdateAsync(project);
             return _mapper.Map<ProjectGetResponse>(project);
         }
+
+        public async Task<bool> DeleteProject(Guid id)
+        {
+            Project project = await _projectRepository.GetByIdAsync(id);
+            if (project != null)
+            {
+                await _projectRepository.DeleteAsync(project);
+                return true;
+            }
+            return false;
+        }
     }
 }
