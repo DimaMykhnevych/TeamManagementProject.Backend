@@ -63,7 +63,7 @@ namespace TeamManagement.Controllers
 
             if (await _teamRepository.UpdateAsync(team))
             {
-                return Ok();
+                return Ok(team);
             }
 
             return NotFound();
