@@ -33,5 +33,30 @@ namespace TeamManagement.Controllers
             IEnumerable<AppUser> employees = await _employeeRegistrationService.GetEmployees();
             return Ok(employees);
         }
+
+        [HttpGet(ApiRoutes.Employee.AllEmployees)]
+        public async Task<IActionResult> GetAllEmployeesExceptCeo()
+        {
+            IEnumerable<AppUser> employees = await _employeeRegistrationService.GetAllEmployeesExceptCeo();
+            return Ok(employees);
+        }
+
+        [HttpPut(ApiRoutes.Employee.BaseWithVersion)]
+        public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeUpdateRequest employee)
+        {
+            AppUser user = await _employeeRegistrationService.UpdateEmployee(employee);
+            return Ok(user);
+        }
+
+        [HttpDelete(ApiRoutes.Employee.Delete)]
+        public async Task<IActionResult> DeleteEmployee(string id)
+        {
+            bool res = await _employeeRegistrationService.DeleteEmployee(id);
+            if (res)
+            {
+                return Ok(res);
+            }
+            return BadRequest(res);
+        }
     }
 }

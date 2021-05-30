@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TeamManagement.BusinessLayer.Contracts.v1.Requests;
 using TeamManagement.BusinessLayer.Exceptions;
 using TeamManagement.BusinessLayer.Services.Interfaces;
+using TeamManagement.DataLayer.Data;
 using TeamManagement.DataLayer.Domain.Models;
 
 namespace TeamManagement.BusinessLayer.Services
@@ -17,18 +18,25 @@ namespace TeamManagement.BusinessLayer.Services
         private readonly UserManager<AppUser> _userManager;
         private readonly IIdentityService _identityService;
         private readonly IMapper _mapper;
+        private AppDbContext _context;
 
         public EmployeeRegistrationService(UserManager<AppUser> userManager, 
-            IIdentityService identityService, IMapper mapper)
+            IIdentityService identityService, IMapper mapper, AppDbContext appDbContext)
         {
             _userManager = userManager;
             _identityService = identityService;
             _mapper = mapper;
+            _context = appDbContext;
         }
 
         public async Task<IEnumerable<AppUser>> GetEmployees()
         {
             return await _userManager.Users.Where(u => u.TeamId == null && u.Position != "CEO").ToListAsync();
+        }
+
+        public async Task<IEnumerable<AppUser>> GetAllEmployeesExceptCeo()
+        {
+            return await _userManager.Users.Where(u => u.Position != "CEO").ToListAsync();
         }
 
         public async Task<AppUser> RegisterEmployee(EmployeeRegistrationRequest employee)
@@ -44,6 +52,42 @@ namespace TeamManagement.BusinessLayer.Services
             await _identityService.AddToRoleAsync(new Guid(user.Id), user.Position);
             ValidateIdentityResult(addUserResult);
             return await _userManager.FindByNameAsync(user.UserName);
+        }
+
+        public async Task<AppUser> UpdateEmployee(EmployeeUpdateRequest employeeToUpdate)
+        {
+            AppUser user = await _userManager.FindByIdAsync(employeeToUpdate.Id);
+            user.FirstName = employeeToUpdate.FirstName;
+            user.LastName = employeeToUpdate.LastName;
+            user.Email = employeeToUpdate.Email;
+            user.DateOfBirth = employeeToUpdate.DateOfBirth;
+            user.UserName = employeeToUpdate.Email;
+            if(user.Position == null && !String.IsNullOrEmpty(employeeToUpdate.Position))
+            {
+                user.Position = employeeToUpdate.Position;
+                await _identityService.AddToRoleAsync(new Guid(user.Id), user.Position);
+            }
+            else if(user.Position != employeeToUpdate.Position)
+            {
+                await _userManager.RemoveFromRoleAsync(user, user.Position);
+                user.Position = employeeToUpdate.Position;
+                await _identityService.AddToRoleAsync(new Guid(user.Id), user.Position);
+            }
+           
+            
+            await _userManager.UpdateAsync(user);
+            return user;
+        }
+
+        public async Task<bool> DeleteEmployee(string id)
+        {
+            AppUser user = await _userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                await _userManager.DeleteAsync(user);
+                return true;
+            }
+            return false;
         }
 
         private void ValidateIdentityResult(IdentityResult result)

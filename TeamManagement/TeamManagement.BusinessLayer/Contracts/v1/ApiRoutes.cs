@@ -83,12 +83,16 @@
         {
             public const string Base = "employee";
             public const string BaseWithVersion = Version + "/" + Base;
+            public const string AllEmployees = BaseWithVersion + "/all-employees";
+            public const string Delete = BaseWithVersion + "/{id}";
         }
 
         public static class Project
         {
             public const string Base = "project";
             public const string BaseWithVersion = Version + "/" + Base;
+            public const string AllProjects = BaseWithVersion + "/all-projects";
+            public const string Delete = BaseWithVersion + "/{id}";
         }
 
         public static class Team
