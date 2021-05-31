@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TeamManagement.BusinessLayer.Contracts.v1.Requests;
 using TeamManagement.BusinessLayer.Contracts.v1.Responses;
@@ -47,10 +48,12 @@ namespace TeamManagement.BusinessLayer.Services
             return _mapper.Map<TeamCreateResponse>(team);
         }
 
-        public async Task<IEnumerable<TeamGetResponse>> GetTeams()
+        public async Task<IEnumerable<TeamGetResponse>> GetTeams(string currentUserName)
         {
+            AppUser user = await _userRepository.GetUserWithCompany(currentUserName);
             IEnumerable<Team> teams = await _teamRepository.GetAsync();
-            return _mapper.Map<IEnumerable<TeamGetResponse>>(teams);
+            IEnumerable<Team> teamsForCurrentCompany = teams.ToList().Where(t => t.CompanyId == user.Company.Id); 
+            return _mapper.Map<IEnumerable<TeamGetResponse>>(teamsForCurrentCompany);
         }
 
         public async Task<TeamGetResponse> GetTeamById(Guid id)

@@ -25,5 +25,10 @@ namespace TeamManagement.DataLayer.Repositories
             return await _context.AppUsers.Include(u => u.Company)
                 .FirstOrDefaultAsync(u => u.UserName == userName);
         }
+
+        public async Task<List<AppUser>> GetUsersWithCompanies()
+        {
+            return await _context.AppUsers.Include(u => u.Company).ToListAsync();
+        }
     }
 }

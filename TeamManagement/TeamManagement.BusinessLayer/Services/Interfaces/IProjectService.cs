@@ -9,8 +9,8 @@ namespace TeamManagement.BusinessLayer.Services.Interfaces
     public interface IProjectService
     {
         Task<ProjectCreateResponse> CreateProject(ProjectCreateRequest projectCreateRequest, string currentUserName);
-        Task<IEnumerable<ProjectGetResponse>> GetProjects();
-        Task<IEnumerable<ProjectGetResponse>> GetAllProjects();
+        Task<IEnumerable<ProjectGetResponse>> GetProjects(string currentUserName);
+        Task<IEnumerable<ProjectGetResponse>> GetAllProjects(string currentUserName);
         Task<ProjectGetResponse> UpdateProject(ProjectUpdateRequest projectUpdate);
         Task<bool> DeleteProject(Guid id);
     }

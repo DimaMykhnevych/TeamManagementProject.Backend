@@ -8,5 +8,6 @@ namespace TeamManagement.DataLayer.Repositories.Interfaces
     {
         Task<IEnumerable<AppUser>> GetUsers();
         Task<AppUser> GetUserWithCompany(string userName);
+        Task<List<AppUser>> GetUsersWithCompanies();
     }
 }

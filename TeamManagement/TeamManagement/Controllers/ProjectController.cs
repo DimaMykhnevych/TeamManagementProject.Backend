@@ -30,14 +30,14 @@ namespace TeamManagement.Controllers
         [HttpGet(ApiRoutes.Project.BaseWithVersion)]
         public async Task<IActionResult> GetProjects()
         {
-            var projects = await _projectService.GetProjects();
+            var projects = await _projectService.GetProjects(User.Identity.Name);
             return Ok(projects);
         }
 
         [HttpGet(ApiRoutes.Project.AllProjects)]
         public async Task<IActionResult> GetAllProjects()
         {
-            var projects = await _projectService.GetAllProjects();
+            var projects = await _projectService.GetAllProjects(User.Identity.Name);
             return Ok(projects);
         }
 

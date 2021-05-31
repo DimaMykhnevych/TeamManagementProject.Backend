@@ -23,21 +23,21 @@ namespace TeamManagement.Controllers
         [HttpPost(ApiRoutes.Employee.BaseWithVersion)]
         public async Task<IActionResult> RegisterEmployee(EmployeeRegistrationRequest registrationRequest)
         {
-            AppUser employee = await _employeeRegistrationService.RegisterEmployee(registrationRequest);
+            AppUser employee = await _employeeRegistrationService.RegisterEmployee(registrationRequest, User.Identity.Name);
             return Ok(employee);
         }
 
         [HttpGet(ApiRoutes.Employee.BaseWithVersion)]
         public async Task<IActionResult> GetEmployees()
         {
-            IEnumerable<AppUser> employees = await _employeeRegistrationService.GetEmployees();
+            IEnumerable<AppUser> employees = await _employeeRegistrationService.GetEmployees(User.Identity.Name);
             return Ok(employees);
         }
 
         [HttpGet(ApiRoutes.Employee.AllEmployees)]
         public async Task<IActionResult> GetAllEmployeesExceptCeo()
         {
-            IEnumerable<AppUser> employees = await _employeeRegistrationService.GetAllEmployeesExceptCeo();
+            IEnumerable<AppUser> employees = await _employeeRegistrationService.GetAllEmployeesExceptCeo(User.Identity.Name);
             return Ok(employees);
         }
 

@@ -72,7 +72,7 @@ namespace TeamManagement.Controllers
         [HttpGet(ApiRoutes.Team.BaseWithVersion)]
         public async Task<IActionResult> GetTeams()
         {
-            var teams = await _teamService.GetTeams();
+            var teams = await _teamService.GetTeams(User.Identity.Name);
             return Ok(teams);
         }
 

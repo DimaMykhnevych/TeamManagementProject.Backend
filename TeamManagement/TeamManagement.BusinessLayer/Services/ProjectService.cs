@@ -34,19 +34,23 @@ namespace TeamManagement.BusinessLayer.Services
             return _mapper.Map<ProjectCreateResponse>(projectToAdd);
         }
 
-        public async Task<IEnumerable<ProjectGetResponse>> GetProjects()
+        public async Task<IEnumerable<ProjectGetResponse>> GetProjects(string currentUserName)
         {
+            AppUser user = await _userRepository.GetUserWithCompany(currentUserName);
             IEnumerable<Project> projects = 
-                await _projectRepository.GetAsync((proj) => proj.TeamProjects == null || !proj.TeamProjects.Any(), 
+                await _projectRepository.GetAsync((proj) => ((proj.TeamProjects == null 
+                || !proj.TeamProjects.Any()) && proj.CompanyId == user.Company.Id), 
                 includeFunc: (proj) => proj.Include(p => p.TeamProjects));
 
             return _mapper.Map<IEnumerable<ProjectGetResponse>>(projects);
         }
 
-        public async Task<IEnumerable<ProjectGetResponse>> GetAllProjects()
+        public async Task<IEnumerable<ProjectGetResponse>> GetAllProjects(string currentUserName)
         {
+            AppUser user = await _userRepository.GetUserWithCompany(currentUserName);
             IEnumerable<Project> projects = await _projectRepository.GetAsync();
-            return _mapper.Map<IEnumerable<ProjectGetResponse>>(projects);
+            IEnumerable<Project> projectsForCurrentCompany = projects.ToList().Where(p => p.CompanyId == user.Company.Id);
+            return _mapper.Map<IEnumerable<ProjectGetResponse>>(projectsForCurrentCompany);
         }
 
         public async Task<ProjectGetResponse> UpdateProject(ProjectUpdateRequest projectUpdate)
