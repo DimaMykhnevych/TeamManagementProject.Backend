@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TeamManagement.DataLayer.Domain.Models
 {
@@ -21,6 +22,10 @@ namespace TeamManagement.DataLayer.Domain.Models
         public ICollection<Article> Articles { get; private set; }
         public ICollection<HowToArticle> HowToArticles { get; private set; }
         public Company Company { get; set; }
+        public Company EmployeesCompany { get; set; }
+
+        [ForeignKey("EmployeesCompany")]
+        public Guid? CompanyId { get; set; }
         public ICollection<Report> Reports { get; set; }
         public Guid? TeamId { get; set; }
         public Team Team { get; set; }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +18,17 @@ namespace TeamManagement.BusinessLayer.Services
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
         private readonly IGenericRepository<SubscriptionPlan> _subscriptionPlanRepository;
+        private readonly UserManager<AppUser> _userManager;
 
         public CompanyService(IMapper mapper, ICompanyRepository companyRepository, 
-            IUserService userService, IGenericRepository<SubscriptionPlan> genericRepository)
+            IUserService userService, IGenericRepository<SubscriptionPlan> genericRepository,
+            UserManager<AppUser> userManager)
         {
             _companyRepository = companyRepository;
             _mapper = mapper;
             _userService = userService;
             _subscriptionPlanRepository = genericRepository;
+            _userManager = userManager;
         }
 
         public async Task<CompanyCreateResponse> AddCompany(CompanyCreateRequest companyRequest)
@@ -47,6 +51,10 @@ namespace TeamManagement.BusinessLayer.Services
             company.CEO = addedUser;
             await _companyRepository.Insert(company);
             await _companyRepository.Save();
+
+            AppUser addedCeo = await _userManager.FindByIdAsync(addedUser.Id);
+            addedCeo.CompanyId = company.Id;
+            await _userManager.UpdateAsync(addedCeo);
             return _mapper.Map<CompanyCreateResponse>(company);
         }
 

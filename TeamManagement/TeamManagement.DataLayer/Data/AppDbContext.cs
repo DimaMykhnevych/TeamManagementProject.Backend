@@ -32,6 +32,10 @@ namespace TeamManagement.DataLayer.Data
                 .HasOne<Company>(u => u.Company)
                 .WithOne(c => c.CEO)
                 .HasForeignKey<Company>(c => c.CeoId);
+            //builder.Entity<AppUser>()
+            //    .HasOne<Company>(a => a.EmployeesCompany)
+            //    .WithMany(e => e.Employees)
+            //    .HasForeignKey<AppUser>(u => u.CompanyId);
 
             builder.Entity<Subscription>()
                 .HasOne<Company>(s => s.Company)

@@ -37,29 +37,29 @@ namespace TeamManagement.BusinessLayer.Services
             AppUser user = await _userRepository.GetUserWithCompany(currentUserName);
             List<AppUser> userWithComp = await _userRepository.GetUsersWithCompanies();
             return userWithComp
-                .Where(u => u.TeamId == null && u.Position != "CEO");
+                .Where(u => u.TeamId == null && u.Position != "CEO" && u.CompanyId == user.CompanyId);
         }
 
         public async Task<IEnumerable<AppUser>> GetAllEmployeesExceptCeo(string currentUserName)
         {
             AppUser user = await _userRepository.GetUserWithCompany(currentUserName);
             List<AppUser> userWithComp = await _userRepository.GetUsersWithCompanies();
-            return userWithComp.Where(u => u.Position != "CEO");
+            return userWithComp.Where(u => u.Position != "CEO" && u.CompanyId == user.CompanyId);
         }
 
         public async Task<AppUser> RegisterEmployee(EmployeeRegistrationRequest employee, string currentUserName)
         {
             AppUser existingUser = await _userManager.FindByEmailAsync(employee.Email);
-            AppUser current = await _userRepository.GetUserWithCompany(currentUserName);
+            AppUser currentUserCEO = await _userRepository.GetUserWithCompany(currentUserName);
             if (existingUser != null)
             {
                 throw new UsernameAlreadyTakenException();
             }
             AppUser user = _mapper.Map<AppUser>(employee);
             user.UserName = employee.Email;
-            //user.Company = current.Company;
-            //user.Company.CeoId = current.Id;
+            user.EmployeesCompany = currentUserCEO.Company;
             IdentityResult addUserResult = await _userManager.CreateAsync(user, employee.Password);
+
             await _identityService.AddToRoleAsync(new Guid(user.Id), user.Position);
             ValidateIdentityResult(addUserResult);
             return await _userManager.FindByNameAsync(user.UserName);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using TeamManagement.DataLayer.Domain.Models;
 
@@ -8,6 +9,7 @@ namespace TeamManagement.BusinessLayer.Contracts.v1.Requests
     {
         public string TeamName { get; set; }
         public List<AppUser> Members { get; set; }
+        [IgnoreMap]
         public string Id { get; set; }
         public Guid CompanyId { get; set; }
         public Company Company { get; set; }
