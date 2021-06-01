@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TeamManagement.BusinessLayer.Contracts.v1.Requests;
 using TeamManagement.BusinessLayer.Contracts.v1.Responses;
@@ -19,16 +21,37 @@ namespace TeamManagement.BusinessLayer.Services
         private readonly IUserService _userService;
         private readonly IGenericRepository<SubscriptionPlan> _subscriptionPlanRepository;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IIdentityService identityService;
 
         public CompanyService(IMapper mapper, ICompanyRepository companyRepository, 
             IUserService userService, IGenericRepository<SubscriptionPlan> genericRepository,
-            UserManager<AppUser> userManager)
+            UserManager<AppUser> userManager, IIdentityService identityService)
         {
             _companyRepository = companyRepository;
             _mapper = mapper;
             _userService = userService;
             _subscriptionPlanRepository = genericRepository;
             _userManager = userManager;
+            this.identityService = identityService;
+        }
+
+        public async Task<(bool, string)> DidCompanyPay(ClaimsPrincipal prin)
+        {
+            var user = await identityService.GetAppUserAsync(prin);
+            if (user.Position == "CEO")
+            {
+                var company = (await this._userManager.Users.Include(us => us.Company).ThenInclude(s => s.Subscription).FirstOrDefaultAsync(us => us.Id == user.Id)).Company;
+                if (company.Subscription.StartDate != DateTime.MinValue && company.Subscription.ExpirationDate != DateTime.MinValue)
+                {
+                    return (true, string.Empty);
+                }
+                else
+                {
+                    return (false, company.Id.ToString());
+                }
+            }
+
+            return (false, string.Empty);
         }
 
         public async Task<CompanyCreateResponse> AddCompany(CompanyCreateRequest companyRequest)

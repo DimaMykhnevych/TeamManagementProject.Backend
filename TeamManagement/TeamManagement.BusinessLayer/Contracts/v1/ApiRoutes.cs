@@ -64,6 +64,7 @@
             public const string Base = "companies";
             public const string BaseWithVersion = Version + "/" + Base;
             public const string GetById = BaseWithVersion + "/{id}";
+            public const string isAvail = BaseWithVersion + "/isAvailable";
         }
 
         public static class SubscriptionPlan

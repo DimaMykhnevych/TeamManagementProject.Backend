@@ -20,6 +20,8 @@ namespace TeamManagement.DataLayer.Repositories
             return await _context.Companies
                 .Include(c => c.Subscription)
                 .ThenInclude(c => c.Transaction)
+                .Include(c => c.Subscription)
+                .ThenInclude(c => c.SubscriptionPlan)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 

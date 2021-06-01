@@ -22,6 +22,19 @@ namespace TeamManagement.Controllers
             _companyService = companyService;
         }
 
+        [HttpGet(ApiRoutes.Company.isAvail)]
+        public async Task<IActionResult> IsAvailable()
+        {
+            (bool, string) didPay = await _companyService.DidCompanyPay(this.User);
+
+            if (didPay.Item1)
+            {
+                return Ok();
+            }
+
+            return BadRequest(didPay.Item2);
+        }
+
         [HttpPost(ApiRoutes.Company.BaseWithVersion)]
         public async Task<IActionResult> AddCompany([FromBody] CompanyCreateRequest company)
         {

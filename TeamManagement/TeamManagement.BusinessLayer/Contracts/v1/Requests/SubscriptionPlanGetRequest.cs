@@ -15,6 +15,6 @@ namespace TeamManagement.BusinessLayer.Contracts.v1.Requests
         public int ProjectsQuantity { get; set; }
         public int TeamsQuantity { get; set; }
         public string Description { get; set; }
-        public SubscriptionGetRequest Subscription { get; set; }
+        //public SubscriptionGetRequest Subscription { get; set; }
     }
 }
