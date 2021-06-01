@@ -43,7 +43,7 @@ namespace TeamManagement.BusinessLayer.Services
                 var company = (await this._userManager.Users.Include(us => us.Company).ThenInclude(s => s.Subscription).FirstOrDefaultAsync(us => us.Id == user.Id)).Company;
                 if (company.Subscription.StartDate != DateTime.MinValue && company.Subscription.ExpirationDate != DateTime.MinValue)
                 {
-                    return (true, string.Empty);
+                    return (true, "forbiden");
                 }
                 else
                 {
@@ -51,7 +51,7 @@ namespace TeamManagement.BusinessLayer.Services
                 }
             }
 
-            return (false, string.Empty);
+            return (false, "forbiden");
         }
 
         public async Task<CompanyCreateResponse> AddCompany(CompanyCreateRequest companyRequest)

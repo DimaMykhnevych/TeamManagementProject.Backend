@@ -55,10 +55,10 @@ namespace TeamManagement.BusinessLayer.Services
 
             string email = information.Principal.FindFirstValue(ClaimTypes.Email);
             var user = await _userManager.FindByEmailAsync(email);
-            var logins = await _userManager.GetLoginsAsync(user);
 
             if (user != null)
             {
+                var logins = await _userManager.GetLoginsAsync(user);
                 if (logins == null || logins.Count == 0)
                 {
                     await _userManager.AddLoginAsync(user, information);

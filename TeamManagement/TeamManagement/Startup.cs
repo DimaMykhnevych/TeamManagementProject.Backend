@@ -42,15 +42,26 @@ namespace PortalForArbitrators
                 //options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder =>
+                builder.WithOrigins("http://localhost:4200",
+                "https://dimamykhnevych.github.io")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+                );
+            });
+
             services.AddAuthorization();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
+            //if (env.IsDevelopment() || env.IsProduction())
+            //{
                 app.UseDeveloperExceptionPage();
-            }
+            //}
 
             var swaggerOptions = new SwaggerOptions();
 
@@ -66,15 +77,16 @@ namespace PortalForArbitrators
                 options.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description);
             });
 
-            var allowedOriginsCORS = Configuration.GetSection("AllowedOriginsCORS").Get<string[]>();
-            app.UseCors(builder =>
-            {
-                builder.WithOrigins(allowedOriginsCORS)
-                    .AllowCredentials();
-                builder.AllowAnyHeader();
-                builder.AllowAnyMethod();
-            });
+            //var allowedOriginsCORS = Configuration.GetSection("AllowedOriginsCORS").Get<string[]>();
+            //app.UseCors(builder =>
+            //{
+            //    builder.WithOrigins(allowedOriginsCORS)
+            //        .AllowCredentials();
+            //    builder.AllowAnyHeader();
+            //    builder.AllowAnyMethod();
+            //});
 
+            app.UseCors("CorsPolicy");
             app.UseHttpsRedirection();
 
             app.UseRouting();

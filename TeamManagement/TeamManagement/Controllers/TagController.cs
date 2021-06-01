@@ -33,10 +33,10 @@ namespace TeamManagement.Controllers
 
         [RequireRoles("TeamLead,CEO,Employee")]
         [HttpGet(ApiRoutes.Tags.BaseWithVersion)]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
-            AppUser currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            var tags = await _context.Tags.Where(t => t.TeamId == currentUser.TeamId).ToListAsync();
+            AppUser currentUser = _userManager.FindByNameAsync(User.Identity.Name).Result;
+            var tags = _context.Tags.Where(t => t.TeamId == currentUser.TeamId).ToList();
             return Ok(tags);
         }
 
