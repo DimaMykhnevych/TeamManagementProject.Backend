@@ -32,9 +32,14 @@ namespace PortalForArbitrators
             services.ConfigureApplicationCookie(options =>
             {
                 //options.LoginPath = "/Login/Account/";
+                //options.Cookie.HttpOnly = false;
+                //options.Cookie.Domain = "https://dimamykhnevych.github.io";
+                //options.Cookie.SameSite = SameSiteMode.None;
+                //options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 options.Cookie.HttpOnly = true;
                 options.Cookie.Domain = null;
                 options.Cookie.SameSite = SameSiteMode.None;
+                //options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             });
 
             services.AddAuthorization();
